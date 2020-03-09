@@ -350,6 +350,28 @@ Wire Wire Line
 Wire Wire Line
 	2550 4650 2550 4750
 Connection ~ 2550 4750
+$Comp
+L Device:R R?
+U 1 1 5E6BC6B8
+P 3450 4150
+F 0 "R?" V 3520 4196 50  0000 C CNN
+F 1 "4.75K" V 3520 4105 50  0000 R CNN
+F 2 "" V 3380 4150 50  0001 C CNN
+F 3 "~" H 3450 4150 50  0001 C CNN
+	1    3450 4150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5E6BE187
+P 3650 4150
+F 0 "R?" V 3720 4196 50  0000 C CNN
+F 1 "4.75K" V 3720 4105 50  0000 R CNN
+F 2 "" V 3580 4150 50  0001 C CNN
+F 3 "~" H 3650 4150 50  0001 C CNN
+	1    3650 4150
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
 	3450 4300 3450 4650
 Connection ~ 3450 4650
@@ -394,78 +416,6 @@ Wire Wire Line
 	3450 3900 3650 3900
 $Comp
 L Device:R R?
-U 1 1 5E70A53E
-P 5100 4200
-F 0 "R?" V 5170 4246 50  0000 C CNN
-F 1 "5.6k" V 5170 4155 50  0000 R CNN
-F 2 "" V 5030 4200 50  0001 C CNN
-F 3 "~" H 5100 4200 50  0001 C CNN
-	1    5100 4200
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R?
-U 1 1 5E70A544
-P 5300 4200
-F 0 "R?" V 5370 4246 50  0000 C CNN
-F 1 "5.6K" V 5370 4155 50  0000 R CNN
-F 2 "" V 5230 4200 50  0001 C CNN
-F 3 "~" H 5300 4200 50  0001 C CNN
-	1    5300 4200
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5100 4350 5100 4650
-Wire Wire Line
-	5300 4350 5300 4750
-$Comp
-L power:+3.3V #PWR?
-U 1 1 5E70A54C
-P 5300 3850
-F 0 "#PWR?" H 5300 3700 50  0001 C CNN
-F 1 "+3V3" H 5300 3990 50  0000 C CNN
-F 2 "" H 5300 3850 60  0000 C CNN
-F 3 "" H 5300 3850 60  0000 C CNN
-	1    5300 3850
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5300 3850 5300 3950
-Connection ~ 5300 3950
-Wire Wire Line
-	5300 3950 5300 4050
-Wire Wire Line
-	5100 4050 5100 3950
-Wire Wire Line
-	5100 3950 5300 3950
-Wire Wire Line
-	4700 4650 5100 4650
-Wire Wire Line
-	4700 4750 5300 4750
-$Comp
-L Device:R R?
-U 1 1 5E6BC6B8
-P 3450 4150
-F 0 "R?" V 3520 4196 50  0000 C CNN
-F 1 "4.75K" V 3520 4105 50  0000 R CNN
-F 2 "" V 3380 4150 50  0001 C CNN
-F 3 "~" H 3450 4150 50  0001 C CNN
-	1    3450 4150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R?
-U 1 1 5E6BE187
-P 3650 4150
-F 0 "R?" V 3720 4196 50  0000 C CNN
-F 1 "4.75K" V 3720 4105 50  0000 R CNN
-F 2 "" V 3580 4150 50  0001 C CNN
-F 3 "~" H 3650 4150 50  0001 C CNN
-	1    3650 4150
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R?
 U 1 1 5E6BF0C0
 P 3850 4150
 F 0 "R?" V 3920 4196 50  0000 C CNN
@@ -475,14 +425,4 @@ F 3 "~" H 3850 4150 50  0001 C CNN
 	1    3850 4150
 	1    0    0    -1  
 $EndComp
-Text GLabel 5450 4650 2    50   Input ~ 0
-SDA
-Text GLabel 5450 4750 2    50   Input ~ 0
-SCL
-Wire Wire Line
-	5100 4650 5450 4650
-Connection ~ 5100 4650
-Wire Wire Line
-	5300 4750 5450 4750
-Connection ~ 5300 4750
 $EndSCHEMATC

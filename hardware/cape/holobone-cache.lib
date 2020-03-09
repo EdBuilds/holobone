@@ -1,11 +1,11 @@
 EESchema-LIBRARY Version 2.4
 #encoding utf-8
 #
-# Connector_Generic:Conn_02x23_Odd_Even
+# Connector_Generic_Conn_02x23_Odd_Even
 #
-DEF Connector_Generic:Conn_02x23_Odd_Even J 0 40 Y N 1 F N
+DEF Connector_Generic_Conn_02x23_Odd_Even J 0 40 Y N 1 F N
 F0 "J" 50 1200 50 H V C CNN
-F1 "Connector_Generic:Conn_02x23_Odd_Even" 50 -1200 50 H V C CNN
+F1 "Connector_Generic_Conn_02x23_Odd_Even" 50 -1200 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 $FPLIST
@@ -108,11 +108,98 @@ X Pin_9 9 -200 700 150 R 50 50 1 1 P
 ENDDRAW
 ENDDEF
 #
-# power:+3.3V
+# Device_C
 #
-DEF power:+3.3V #PWR 0 0 Y Y 1 F P
+DEF Device_C C 0 10 N Y 1 F N
+F0 "C" 25 100 50 H V L CNN
+F1 "Device_C" 25 -100 50 H V L CNN
+F2 "" 38 -150 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ C_*
+$ENDFPLIST
+DRAW
+P 2 0 1 20 -80 -30 80 -30 N
+P 2 0 1 20 -80 30 80 30 N
+X ~ 1 0 150 110 D 50 50 1 1 P
+X ~ 2 0 -150 110 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Device_R
+#
+DEF Device_R R 0 0 N Y 1 F N
+F0 "R" 80 0 50 V V C CNN
+F1 "Device_R" 0 0 50 V V C CNN
+F2 "" -70 0 50 V I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ R_*
+$ENDFPLIST
+DRAW
+S -40 -100 40 100 0 1 10 N
+X ~ 1 0 150 50 D 50 50 1 1 P
+X ~ 2 0 -150 50 U 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# Memory_EEPROM_CAT24C256
+#
+DEF Memory_EEPROM_CAT24C256 U 0 20 Y Y 1 F N
+F0 "U" -250 250 50 H V C CNN
+F1 "Memory_EEPROM_CAT24C256" 50 250 50 H V L CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+ALIAS 24LC02 24LC00 24LC04 24LC08 24LC01 24LC512 24LC64 24LC1025 24LC32 24LC256 24LC128 CAT24C256 CAT24C128
+$FPLIST
+ DIP*W7.62mm*
+ SOIC*3.9x4.9mm*
+ TSSOP*4.4x3mm*P0.65mm*
+ DFN*3x2mm*P0.5mm*
+$ENDFPLIST
+DRAW
+S -300 200 300 -200 1 1 10 f
+X A0 1 -400 100 100 R 50 50 1 1 I
+X A1 2 -400 0 100 R 50 50 1 1 I
+X A2 3 -400 -100 100 R 50 50 1 1 I
+X GND 4 0 -300 100 U 50 50 1 1 W
+X SDA 5 400 100 100 L 50 50 1 1 B
+X SCL 6 400 0 100 L 50 50 1 1 I
+X WP 7 400 -100 100 L 50 50 1 1 I
+X VCC 8 0 300 100 D 50 50 1 1 W
+ENDDRAW
+ENDDEF
+#
+# Switch_SW_DIP_x02
+#
+DEF Switch_SW_DIP_x02 SW 0 0 Y N 1 F N
+F0 "SW" 0 250 50 H V C CNN
+F1 "Switch_SW_DIP_x02" 0 -150 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ SW?DIP?x2*
+$ENDFPLIST
+DRAW
+C -80 0 20 0 0 0 N
+C -80 100 20 0 0 0 N
+C 80 0 20 0 0 0 N
+C 80 100 20 0 0 0 N
+S -150 200 150 -100 0 1 10 f
+P 2 0 0 0 -60 5 93 46 N
+P 2 0 0 0 -60 105 93 146 N
+X ~ 1 -300 100 200 R 50 50 1 1 P
+X ~ 2 -300 0 200 R 50 50 1 1 P
+X ~ 3 300 0 200 L 50 50 1 1 P
+X ~ 4 300 100 200 L 50 50 1 1 P
+ENDDRAW
+ENDDEF
+#
+# power_+3.3V
+#
+DEF power_+3.3V #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -150 50 H I C CNN
-F1 "power:+3.3V" 0 140 50 H V C CNN
+F1 "power_+3.3V" 0 140 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 ALIAS +3.3V
@@ -124,11 +211,11 @@ X +3V3 1 0 0 0 U 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #
-# power:+5V
+# power_+5V
 #
-DEF power:+5V #PWR 0 0 Y Y 1 F P
+DEF power_+5V #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -150 50 H I C CNN
-F1 "power:+5V" 0 140 50 H V C CNN
+F1 "power_+5V" 0 140 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -139,11 +226,24 @@ X +5V 1 0 0 0 U 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #
-# power:GNDD
+# power_GND
 #
-DEF power:GNDD #PWR 0 0 Y Y 1 F P
+DEF power_GND #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -250 50 H I C CNN
-F1 "power:GNDD" 0 -125 50 H V C CNN
+F1 "power_GND" 0 -150 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+DRAW
+P 6 0 1 0 0 0 0 -50 50 -50 0 -100 -50 -50 0 -50 N
+X GND 1 0 0 0 D 50 50 1 1 W N
+ENDDRAW
+ENDDEF
+#
+# power_GNDD
+#
+DEF power_GNDD #PWR 0 0 Y Y 1 F P
+F0 "#PWR" 0 -250 50 H I C CNN
+F1 "power_GNDD" 0 -125 50 H V C CNN
 F2 "" 0 0 50 H I C CNN
 F3 "" 0 0 50 H I C CNN
 DRAW
@@ -153,11 +253,11 @@ X GNDD 1 0 0 0 D 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #
-# pwr_BeagleBone:GNDA_ADC
+# pwr_BeagleBone_GNDA_ADC
 #
-DEF pwr_BeagleBone:GNDA_ADC #PWR 0 0 Y Y 1 F P
+DEF pwr_BeagleBone_GNDA_ADC #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -250 50 H I C CNN
-F1 "pwr_BeagleBone:GNDA_ADC" 0 -150 50 H V C CNN
+F1 "pwr_BeagleBone_GNDA_ADC" 0 -150 50 H V C CNN
 F2 "" 0 0 60 H V C CNN
 F3 "" 0 0 60 H V C CNN
 DRAW
@@ -166,11 +266,11 @@ X GNDA_ADC 1 0 0 0 D 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #
-# pwr_BeagleBone:SYS_5V
+# pwr_BeagleBone_SYS_5V
 #
-DEF pwr_BeagleBone:SYS_5V #PWR 0 0 Y Y 1 F P
+DEF pwr_BeagleBone_SYS_5V #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -150 50 H I C CNN
-F1 "pwr_BeagleBone:SYS_5V" 0 140 50 H V C CNN
+F1 "pwr_BeagleBone_SYS_5V" 0 140 50 H V C CNN
 F2 "" 0 0 60 H V C CNN
 F3 "" 0 0 60 H V C CNN
 DRAW
@@ -181,11 +281,11 @@ X SYS_5V 1 0 0 0 U 50 50 1 1 W N
 ENDDRAW
 ENDDEF
 #
-# pwr_BeagleBone:VDD_ADC
+# pwr_BeagleBone_VDD_ADC
 #
-DEF pwr_BeagleBone:VDD_ADC #PWR 0 0 Y Y 1 F P
+DEF pwr_BeagleBone_VDD_ADC #PWR 0 0 Y Y 1 F P
 F0 "#PWR" 0 -150 50 H I C CNN
-F1 "pwr_BeagleBone:VDD_ADC" 0 140 50 H V C CNN
+F1 "pwr_BeagleBone_VDD_ADC" 0 140 50 H V C CNN
 F2 "" 0 0 60 H V C CNN
 F3 "" 0 0 60 H V C CNN
 DRAW
