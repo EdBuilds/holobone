@@ -140,7 +140,7 @@ F 0 "R14" H 8409 4096 50  0000 L CNN
 F 1 "16.9K" H 8409 4005 50  0000 L CNN
 F 2 "Resistor_SMD:R_0805_2012Metric" V 8280 4050 50  0001 C CNN
 F 3 "http://www.farnell.com/datasheets/2310790.pdf" H 8350 4050 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080516k9fkea/res-16k9-1-0-125w-0805-thick-film/dp/1652926RL" H 8350 4050 50  0001 C CNN "Store"
+F 4 "https://uk.farnell.com/vishay/crcw080516k9fkea/res-16k9-1-0-125w-0805-thick-film/dp/1652926" H 8350 4050 50  0001 C CNN "Store"
 	1    8350 4050
 	1    0    0    -1  
 $EndComp
@@ -1891,7 +1891,7 @@ F 0 "R10" H 2459 3046 50  0000 L CNN
 F 1 "2K" H 2459 2955 50  0000 L CNN
 F 2 "Resistor_SMD:R_0805_2012Metric" V 2330 3000 50  0001 C CNN
 F 3 "http://www.farnell.com/datasheets/2310790.pdf" H 2400 3000 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080516k9fkea/res-16k9-1-0-125w-0805-thick-film/dp/1652926RL" H 2400 3000 50  0001 C CNN "Store"
+F 4 "https://uk.farnell.com/vishay/crcw08052k00fkea/res-2k-1-0-125w-0805-thick-film/dp/1469884" H 2400 3000 50  0001 C CNN "Store"
 	1    2400 3000
 	1    0    0    -1  
 $EndComp
