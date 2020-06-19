@@ -6,6 +6,16 @@
       <sourceFolder url="file://$MODULE_DIR$/examples" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/pruif/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pruif/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/pruif/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/pruif/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/parser/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/parser/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/parser/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/parser/benches" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/parser/target" />
+      <excludeFolder url="file://$MODULE_DIR$/pruif/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

@@ -1,19 +1,5 @@
-[package]
-name = "holobone"
-version = "0.1.0"
-authors = ["Tamas Feher <ta.f@automata.tech>"]
-edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-svgtypes = "0.5.0"
-clap = "2.33.0"
-sdl2 = "0.33.0"
-xmlparser = "0.13.0"
-lyon_geom = "0.15.0"
-
-
-
-
-
+[workspace]
+members = [
+    "parser",
+    "pruif"
+]
