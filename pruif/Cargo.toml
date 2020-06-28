@@ -8,4 +8,7 @@ edition = "2018"
 
 [dependencies]
 prusst = "1.0.0"
+bitfield = "0.13.2"
+bitflags = "1.2.1"
+
 

@@ -1,0 +1,11 @@
+#!/bin/bash
+cargo build --bin pruif --target armv7-unknown-linux-gnueabihf
+scp ./target/armv7-unknown-linux-gnueabihf/debug/pruif debian@192.168.1.87:/home/debian/pruif
+# compile pru fw
+cd ./target/pru
+pasm -b ../../prufw/PRUDAC.p
+pasm -b ../../prufw/PRUClock.p
+# copy over to beagleboard
+scp ./PRUDAC.bin debian@192.168.1.87:/home/debian/PRUDAC.bin
+scp ./PRUClock.bin debian@192.168.1.87:/home/debian/PRUClock.bin
+
