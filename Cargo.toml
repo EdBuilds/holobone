@@ -1,5 +1,7 @@
 [workspace]
 members = [
     "parser",
-    "pruif"
+    "pruif",
+    "visual_debugger",
+    "pru_control",
 ]

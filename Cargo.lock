@@ -118,12 +118,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "pru_control"
+version = "0.1.0"
+dependencies = [
+ "bitfield 0.13.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bitflags 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "pruif"
 version = "0.1.0"
 dependencies = [
  "bitfield 0.13.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "bitflags 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pru_control 0.1.0",
  "prusst 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "visual_debugger 0.1.0",
 ]
 
 [[package]]
@@ -190,6 +200,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "vec_map"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "visual_debugger"
+version = "0.1.0"
+dependencies = [
+ "pru_control 0.1.0",
+ "sdl2 0.33.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "winapi"

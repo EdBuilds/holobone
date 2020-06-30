@@ -4,79 +4,13 @@ extern crate bitflags;
 extern crate bitfield;
 extern crate prusst;
 use std::collections::VecDeque;
-use std::result;
+use std::{result, time};
 use std::vec;
+use visual_debugger::VisDebug;
 
-const PRU_DBUF_CAPACITY: usize = 10;
-
-pub enum Frequencies {
-    Hz1 = 20000000,
-}
-
-bitfield! {
-  #[derive(Clone, Copy)]
-  struct PWMControlReg_t(u32);
-  impl Debug;
-  impl Copy;
-  u32;
-  enable, set_enable: 0;
-  reload, set_reload: 1;
-}
-
-bitflags! {
-  struct CommandReg: u16 {
-  const SHUTDOWN_BAR = 1 << 12;
-  const LASER_ENABLE = 1 << 12;
-  const OUTPUT_GAIN_BAR = 1 << 13;
-  const INPUT_BUFFER = 1 << 14;
-  const CHANNEL_A_BAR = 1 << 15;
-  const CHANNEL_B = 1 << 15;
-  }
-}
-impl Default for CommandReg {
-    fn default() -> CommandReg {
-        CommandReg::SHUTDOWN_BAR | CommandReg::OUTPUT_GAIN_BAR | CommandReg::INPUT_BUFFER
-    }
-}
-
-struct SampleScaled {
-    data_a: u16,
-    data_b: u16,
-    laser_on: bool,
-    voltage_out: bool,
-}
-
-#[derive(Clone, Copy)]
-struct CommandRegPair {
-    channelA: CommandReg,
-    channelB: CommandReg,
-}
-impl CommandRegPair {
-    pub fn new(sample: SampleScaled) -> CommandRegPair {
-        const DATA_MASK: u16 = (1 << 12) - 1;
-        let mut channelA = CommandReg {
-            bits: sample.data_a & DATA_MASK,
-        } | CommandReg::OUTPUT_GAIN_BAR
-            | CommandReg::INPUT_BUFFER;
-        let mut channelB = CommandReg {
-            bits: sample.data_b & DATA_MASK,
-        } | CommandReg::OUTPUT_GAIN_BAR
-            | CommandReg::INPUT_BUFFER
-            | CommandReg::CHANNEL_B;
-        channelA.set(CommandReg::LASER_ENABLE, sample.laser_on);
-        channelB.set(CommandReg::SHUTDOWN_BAR, sample.voltage_out);
-        CommandRegPair { channelA, channelB }
-    }
-}
-
-#[derive(Clone, Copy)]
-struct Ctrl {
-    delay: u32,
-    control: PWMControlReg_t,
-    flag: u32,
-    read_bank: u32,
-}
-
+// TODO: this value could be stored in the eeprom
+const DAC_MAX: u16 = ((1<<12)-1);
+const V_TO_DAC_CODE: f32 = (DAC_MAX as f32 / 10.0);
 use prusst::{Evtout, IntcConfig, MemSegment, Pruss, Sysevt};
 
 use std::borrow::BorrowMut;
@@ -88,6 +22,8 @@ use std::thread::JoinHandle;
 use std::time::Duration;
 use std::iter::FromIterator;
 use std::collections::vec_deque::Iter;
+use std::sync::atomic::{AtomicBool, Ordering};
+use pru_control::{SampleScaled, CommandRegPair, Frequencies, Ctrl, PWMControlReg_t, PRU_DBUF_CAPACITY};
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Error {
@@ -103,10 +39,13 @@ pub struct Sample {
     pub laser_on: bool,
 }
 fn scale_sample(sample: &Sample) -> SampleScaled {
+    let max = DAC_MAX;
+   let data_a = (sample.voltage_x * V_TO_DAC_CODE) as u16 + DAC_MAX / 2 ;
+    let data_b = (sample.voltage_y * V_TO_DAC_CODE) as u16 + DAC_MAX / 2 ;
     // TODO: Finish scaling
     SampleScaled {
-        data_a: 0,
-        data_b: 0,
+        data_a,
+        data_b,
         laser_on: sample.laser_on,
         voltage_out: true
     }
@@ -116,6 +55,7 @@ pub struct Cape {
     runner_handle: Option<thread::JoinHandle<()>>,
     rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>>,
     staging_buffer: Arc<Mutex<Vec<CommandRegPair>>>,
+    kill_switch: Arc<AtomicBool>,
 }
 
 impl Cape {
@@ -126,9 +66,11 @@ impl Cape {
             runner_handle: None,
             rolling_buffer: Arc::new(Mutex::new(VecDeque::new())),
             staging_buffer: Arc::new(Mutex::new(Vec::new())),
+            kill_switch: Arc::new(AtomicBool::new(false)),
         })
     }
-    fn runner() {
+
+    fn runner(frequency: Frequencies) {
         println!("Child thread started!");
         let mut pruss = match Pruss::new(&IntcConfig::new_populated()) {
             Ok(p) => p,
@@ -187,33 +129,73 @@ impl Cape {
             pruss.pru1.load_code(&mut pru1_binary).unwrap().run();
         }
 
-        ctrl.flag = 0;
-        ctrl.control.set_enable(false);
-        ctrl.delay = frequency as u32;
+        //ctrl.flag = 0;
+        //ctrl.control.set_enable(false);
+        //ctrl.delay = frequency as u32;
         println!("Delay loaded!");
-        ctrl.control.set_reload(true);
+        //ctrl.control.set_reload(true);
         println!("control loaded!");
-        ctrl.control.set_enable(true);
+        //ctrl.control.set_enable(true);
         println!("Start!");
 
         loop {
             irq.wait();
-            println!("Bank {} read.", ctrl.read_bank);
+            //println!("Bank {} read.", ctrl.read_bank);
 
             // Clear the triggering interrupt and re-enable the host irq.
             pruss.intc.clear_sysevt(Sysevt::S19);
             pruss.intc.enable_host(Evtout::E0);
+
         }
     }
-    fn runner_pc(rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>>, staging_buffer: Arc<Mutex<Vec<CommandRegPair>>>, ) {
+    fn runner_pc(frequency: Frequencies,
+                 rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>>,
+                 staging_buffer: Arc<Mutex<Vec<CommandRegPair>>>,
+                 should_stop: Arc<AtomicBool>) {
+        println!("Child thread started!");
+        let visual_debugger = VisDebug::new().unwrap();
+        let delay = match frequency {
+            Hz1       => time::Duration::from_millis(1000),
+        };
+       loop{
+           if should_stop.load(Ordering::Relaxed){
+               break;
+           }
+           {
+           let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
+           while local_rolling_buffer.len() < PRU_DBUF_CAPACITY {
+               let mut local_staging_buffer = (*staging_buffer.lock().unwrap()).clone();
+               if local_staging_buffer.is_empty() { panic!("Uninitialized staging buffer!")}
+               local_rolling_buffer.append(VecDeque::from(local_staging_buffer).borrow_mut());
+               println!("Loaded staging to rolling buffer");
+           }
+           }
+           thread::sleep(delay);
+           println!("Load request received");
 
+           {
+               let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
+               let mut drained_data = local_rolling_buffer.drain(0..PRU_DBUF_CAPACITY).collect::<Vec<CommandRegPair>>();
+               println!("drained data: {:#?}",drained_data);
+               visual_debugger.display_buffer(drained_data);
+           }
+       }
+
+        println!("Child thread wrapping up!");
     }
 
     pub fn start(&mut self, frequency: Frequencies) {
         let mut rolling_buffer = self.rolling_buffer.clone();
         let mut staging_buffer = self.staging_buffer.clone();
+        let mut kill_switch = self.kill_switch.clone();
+
         self.runner_handle = Some(thread::spawn(move || {
+            Cape::runner_pc(frequency, rolling_buffer, staging_buffer, kill_switch);
         }));
+    }
+    pub fn stop(&mut self) {
+       self.kill_switch.store(true, Ordering::Relaxed);
+
     }
     pub fn push_command(&mut self, samples: Vec<Sample>, repeat: bool) {
 
@@ -229,13 +211,7 @@ impl Cape {
 }
 impl Drop for Cape {
     fn drop(&mut self) {
+        self.stop();
         self.runner_handle.take().map(JoinHandle::join);
-        println!("Thread finished!");
     }
-}
-#[cfg(test)]
-mod tests {
-
-    #[test]
-    fn fail() {}
 }

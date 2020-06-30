@@ -1,5 +1,5 @@
 [package]
-name = "pruif"
+name = "visual_debugger"
 version = "0.1.0"
 authors = ["Tamas Feher <ta.f@automata.tech>"]
 edition = "2018"
@@ -7,10 +7,5 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-prusst = "1.0.0"
-bitfield = "0.13.2"
-bitflags = "1.2.1"
-visual_debugger = {path = "../visual_debugger"}
+sdl2 = "0.33.0"
 pru_control = {path = "../pru_control"}
-
-
