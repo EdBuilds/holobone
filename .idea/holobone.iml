@@ -10,7 +10,7 @@
       <sourceFolder url="file://$MODULE_DIR$/pruif/examples" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/pruif/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/pruif/benches" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/parser/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tracer/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/parser/examples" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/parser/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/parser/benches" isTestSource="true" />
@@ -22,10 +22,19 @@
       <sourceFolder url="file://$MODULE_DIR$/pru_control/examples" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/pru_control/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/pru_control/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/cli_runner/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli_runner/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cli_runner/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/cli_runner/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tracer/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/tracer/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/tracer/benches" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/cli_runner/target" />
       <excludeFolder url="file://$MODULE_DIR$/parser/target" />
       <excludeFolder url="file://$MODULE_DIR$/pru_control/target" />
       <excludeFolder url="file://$MODULE_DIR$/pruif/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/tracer/target" />
       <excludeFolder url="file://$MODULE_DIR$/visual_debugger/target" />
     </content>
     <orderEntry type="inheritedJdk" />

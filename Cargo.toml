@@ -1,7 +1,8 @@
 [workspace]
 members = [
-    "parser",
     "pruif",
+    "tracer",
     "visual_debugger",
     "pru_control",
+    "cli_runner",
 ]

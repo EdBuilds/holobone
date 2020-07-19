@@ -6,7 +6,6 @@ extern crate prusst;
 use std::collections::VecDeque;
 use std::{result, time};
 use std::vec;
-use visual_debugger::VisDebug;
 
 // TODO: this value could be stored in the eeprom
 const DAC_MAX: u16 = ((1<<12)-1);
@@ -16,7 +15,7 @@ use prusst::{Evtout, IntcConfig, MemSegment, Pruss, Sysevt};
 use std::borrow::BorrowMut;
 use std::fs::File;
 use std::io::Write;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, mpsc};
 use std::thread;
 use std::thread::JoinHandle;
 use std::time::Duration;
@@ -24,6 +23,8 @@ use std::iter::FromIterator;
 use std::collections::vec_deque::Iter;
 use std::sync::atomic::{AtomicBool, Ordering};
 use pru_control::{SampleScaled, CommandRegPair, Frequencies, Ctrl, PWMControlReg_t, PRU_DBUF_CAPACITY};
+use std::process::Command;
+use visual_debugger::VisDebug;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Error {
@@ -40,8 +41,8 @@ pub struct Sample {
 }
 fn scale_sample(sample: &Sample) -> SampleScaled {
     let max = DAC_MAX;
-   let data_a = (sample.voltage_x * V_TO_DAC_CODE) as u16 + DAC_MAX / 2 ;
-    let data_b = (sample.voltage_y * V_TO_DAC_CODE) as u16 + DAC_MAX / 2 ;
+    let data_a = ((-sample.voltage_x * V_TO_DAC_CODE) + DAC_MAX as f32 / 2.0) as u16;
+    let data_b = ((-sample.voltage_y * V_TO_DAC_CODE) + DAC_MAX as f32 / 2.0) as u16;
     // TODO: Finish scaling
     SampleScaled {
         data_a,
@@ -70,7 +71,11 @@ impl Cape {
         })
     }
 
-    fn runner(frequency: Frequencies) {
+    fn runner(frequency: Frequencies,
+              rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>>,
+              staging_buffer: Arc<Mutex<Vec<CommandRegPair>>>,
+              should_stop: Arc<AtomicBool>)
+    {
         println!("Child thread started!");
         let mut pruss = match Pruss::new(&IntcConfig::new_populated()) {
             Ok(p) => p,
@@ -97,18 +102,18 @@ impl Cape {
         let (mut bank1, mut bank2) = pruss.dram2.split_at(0x10100);
         let ctrl = bank1.alloc(Ctrl {
             delay: 0,
-            control: PWMControlReg_t { 0: 0 },
+            control: PWMControlReg_t::RELOAD,
             flag: 0,
             read_bank: 0,
         });
         let (mut dbuf1, mut dbuf1after) = pruss.dram0.split_at(0x0014);
 
-        let databuffer1 = unsafe {
+        let mut databuffer1 = unsafe {
             pruss
                 .dram0
                 .alloc_uninitialized::<[CommandRegPair; PRU_DBUF_CAPACITY]>()
         };
-        let databuffer2 = unsafe {
+        let mut databuffer2 = unsafe {
             pruss
                 .dram1
                 .alloc_uninitialized::<[CommandRegPair; PRU_DBUF_CAPACITY]>()
@@ -129,18 +134,50 @@ impl Cape {
             pruss.pru1.load_code(&mut pru1_binary).unwrap().run();
         }
 
-        //ctrl.flag = 0;
-        //ctrl.control.set_enable(false);
-        //ctrl.delay = frequency as u32;
+        ctrl.flag = 0;
+        ctrl.control.set(PWMControlReg_t::ENABLE, false);
+        ctrl.delay = frequency as u32;
         println!("Delay loaded!");
-        //ctrl.control.set_reload(true);
+        ctrl.control.set(PWMControlReg_t::RELOAD, true);
         println!("control loaded!");
-        //ctrl.control.set_enable(true);
+        ctrl.control.set(PWMControlReg_t::ENABLE, true);
         println!("Start!");
+        ctrl.control.set(PWMControlReg_t::RELOAD, false);
+
 
         loop {
+
+            if should_stop.load(Ordering::Relaxed){
+                break;
+            }
+            {
+                let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
+                while local_rolling_buffer.len() < PRU_DBUF_CAPACITY {
+                    let mut local_staging_buffer = (*staging_buffer.lock().unwrap()).clone();
+                    if local_staging_buffer.is_empty() { panic!("Uninitialized staging buffer!")}
+                    for sample in local_staging_buffer {
+                        local_rolling_buffer.push_back(sample);
+                    }
+                }
+            }
             irq.wait();
-            //println!("Bank {} read.", ctrl.read_bank);
+            //thread::sleep(delay);
+
+            {
+                let mut drained_data = Vec::new();
+                let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
+                for num in 1..=PRU_DBUF_CAPACITY {
+                    match local_rolling_buffer.pop_front(){
+                       Some(sample) => {drained_data.push(sample)}
+                        _ => {break;}
+                    }
+                }
+                if (ctrl.read_bank == 1)  {
+                    databuffer1.copy_from_slice(&drained_data[..]);
+                } else if (ctrl.read_bank == 2) {
+                    databuffer2.copy_from_slice(&drained_data[..]);
+                }
+            }
 
             // Clear the triggering interrupt and re-enable the host irq.
             pruss.intc.clear_sysevt(Sysevt::S19);
@@ -152,11 +189,15 @@ impl Cape {
                  rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>>,
                  staging_buffer: Arc<Mutex<Vec<CommandRegPair>>>,
                  should_stop: Arc<AtomicBool>) {
-        println!("Child thread started!");
-        let visual_debugger = VisDebug::new().unwrap();
-        let delay = match frequency {
-            Hz1       => time::Duration::from_millis(1000),
-        };
+        let (buffer_empty_sender, buffer_empty_receiver) = mpsc::channel();
+
+        let visual_debugger = VisDebug::new(&frequency, PRU_DBUF_CAPACITY, buffer_empty_sender).unwrap();
+        let mut delay = time::Duration::from_millis( match frequency {
+            Frequencies::Hz1 => 1000,
+            Frequencies::Hz10 => 100,
+            Frequencies::Hz100 => 10,
+            _ => 10,
+        });
        loop{
            if should_stop.load(Ordering::Relaxed){
                break;
@@ -167,21 +208,20 @@ impl Cape {
                let mut local_staging_buffer = (*staging_buffer.lock().unwrap()).clone();
                if local_staging_buffer.is_empty() { panic!("Uninitialized staging buffer!")}
                local_rolling_buffer.append(VecDeque::from(local_staging_buffer).borrow_mut());
-               println!("Loaded staging to rolling buffer");
+               //println!("Loaded staging to rolling buffer");
            }
            }
-           thread::sleep(delay);
-           println!("Load request received");
+           let empty_buffer = buffer_empty_receiver.recv().unwrap();
+           //thread::sleep(delay);
+           //println!("Load request received");
 
            {
                let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
                let mut drained_data = local_rolling_buffer.drain(0..PRU_DBUF_CAPACITY).collect::<Vec<CommandRegPair>>();
-               println!("drained data: {:#?}",drained_data);
                visual_debugger.display_buffer(drained_data);
            }
        }
 
-        println!("Child thread wrapping up!");
     }
 
     pub fn start(&mut self, frequency: Frequencies) {

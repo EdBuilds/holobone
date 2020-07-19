@@ -2,18 +2,19 @@ extern crate pruif;
 use std::{thread, time};
 use pruif::{Sample};
 use pru_control::{Frequencies};
+
 fn main() {
     let mut capemgr = pruif::Cape::new().unwrap();
-    capemgr.start(Frequencies::Hz1);
     let mut commands = Vec::with_capacity(10);
-    for i in 0..100 {
+    for i in 0..200 {
+        let mut angle = i as f32 / 200.0 * std::f32::consts::PI * 2.0;
         commands.push(Sample{
-            voltage_x: i as f32 / 10.0,
-            voltage_y: 0.0,
-            laser_on: false
+            voltage_x: angle.sin()*2.0,
+            voltage_y: angle.cos()*2.0,
+            laser_on: true
         });
     }
     capemgr.push_command(commands, true);
-    thread::sleep(time::Duration::from_millis(100000));
-
+    capemgr.start(Frequencies::Hz10000);
+    thread::sleep(time::Duration::from_millis(10000000));
 }

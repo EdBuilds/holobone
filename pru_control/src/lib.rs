@@ -2,20 +2,40 @@
 extern crate bitflags;
 #[macro_use]
 extern crate bitfield;
+extern crate clap;
+use clap::arg_enum;
 
-pub const PRU_DBUF_CAPACITY: usize = 10;
-pub enum Frequencies {
-    Hz1 = 20000000,
+pub const PRU_DBUF_CAPACITY: usize = 500;
+arg_enum!{
+    pub enum Frequencies {
+        Hz1 = 50420496,
+        Hz2 = 25210243,
+        Hz5 = 10084090,
+        Hz10 = 5042040,
+        Hz20 = 2521014,
+        Hz50 = 1008399,
+        Hz100 = 504194,
+        Hz200 = 252092,
+        Hz500 = 100830,
+        Hz1000 = 50409,
+        Hz2000 = 25200,
+        Hz5000 = 10073,
+        Hz10000 = 5031,
+        Hz20000 = 2511,
+        Hz30000 = 1670,
+        Hz40000 = 1250,
+        Hz50000 = 998,
+        Hz60000 = 830,
+        Hz70000 = 710,
+        Hz80000 = 620,
+    }
 }
 
-bitfield! {
-  #[derive(Clone, Copy)]
-  pub struct PWMControlReg_t(u32);
-  impl Debug;
-  impl Copy;
-  u32;
-   enable,  set_enable: 0;
-   reload,  set_reload: 1;
+bitflags! {
+  pub struct PWMControlReg_t: u32{
+    const ENABLE = 1 << 0;
+    const RELOAD = 1 << 1;
+  }
 }
 
 bitflags! {
@@ -48,8 +68,8 @@ pub struct SampleScaled {
 
 #[derive(Clone, Copy, Debug)]
 pub struct CommandRegPair {
-    pub channelA: CommandReg,
     pub channelB: CommandReg,
+    pub channelA: CommandReg,
 }
 
 impl CommandRegPair {
@@ -64,9 +84,9 @@ impl CommandRegPair {
         } | CommandReg::OUTPUT_GAIN_BAR
             | CommandReg::INPUT_BUFFER
             | CommandReg::CHANNEL_B;
-        channelA.set(CommandReg::LASER_ENABLE, sample.laser_on);
+        channelA.set(CommandReg::SHUTDOWN_BAR, sample.voltage_out);
         channelB.set(CommandReg::SHUTDOWN_BAR, sample.voltage_out);
-        CommandRegPair { channelA, channelB }
+        CommandRegPair { channelB, channelA }
     }
 }
 

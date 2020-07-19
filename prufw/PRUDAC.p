@@ -18,12 +18,12 @@
 
 // Constants from the MCP3004/3008 datasheet 
 
-#define TIME_CLOCK      0x4C4B40       // T_hi and t_lo = 125ns = 25 instructions (min)
+#define TIME_CLOCK      0x0A       // T_hi and t_lo = 125ns = 25 instructions (min)
 #define BANK_1_START    0x0       // T_hi and t_lo = 125ns = 25 instructions (min)
-#define BANK_1_END      0x0014       // T_hi and t_lo = 125ns = 25 instructions (min)
+#define BANK_1_END      0x07D0       // T_hi and t_lo = 125ns = 25 instructions (min)
 #define BANK_2_START    0x2000       // T_hi and t_lo = 125ns = 25 instructions (min)
-#define BANK_2_END      0x2014       // T_hi and t_lo = 125ns = 25 instructions (min)
-#define LDAC_DELAY      0x4C4B40       // T_hi and t_lo = 125ns = 25 instructions (min)
+#define BANK_2_END      0x27D0       // T_hi and t_lo = 125ns = 25 instructions (min)
+#define LDAC_DELAY      0x40       // T_hi and t_lo = 125ns = 25 instructions (min)
 
 #define PRU0_ARM_SYSEVT 19
 
@@ -71,10 +71,15 @@ WAIT_LDAC_LOW:
     QBNE    WAIT_LDAC_LOW, r3, 0     // check if the count is still low                 
     SET     r30.t0         // set LDAC high
 
+    MOV     r3, TIME_CLOCK
+WAIT_LDAC_IDLE:
+    SUB     r3, r3, 1     // decrement the counter by 1 and loop (next line)
+    QBNE    WAIT_LDAC_IDLE, r3, 0     // check if the count is still low                 
+
 DBUF:
     LBBO    r10, r9, 0, 4     // load current command to output register
     ADD     r9, r9, 4         // Increment dbuf pointer
-    QBEQ    BANK1READ, r9, BANK_1_END      // check for cleared buffer 1
+    QBEQ    BANK1READ, r9, r7      // check for cleared buffer 1
     QBEQ    BANK2READ, r9, r8      // check for cleared buffer 2
     QBA     TRANSMIT
 BANK1READ:
@@ -90,6 +95,7 @@ BANK2READ:
     MOV     r31.b0, 32 | (PRU0_ARM_SYSEVT - 16) // notify completion to host
 
 TRANSMIT:
+    //MOV     r10, 0x80018001 //ONLY FOR DEBUG
     CALL    SPICLK           // repeat call the SPICLK procedure until all 24-bits written/read
 
     MOV     r0, TIME_CLOCK     // time for clock high
@@ -113,33 +119,34 @@ CYCLEST:
     MOV     r0, TIME_CLOCK      // time for clock low -- assuming clock low before cycle
     CLR     r30.t3              // set the clock low
     //set output
-    QBBC    CLEAROUT, r10.t0
+    QBBC    CLEAROUT, r10.t31
     SET     r30.t2
     QBA     OUTEND
 CLEAROUT:
     CLR     r30.t2
 OUTEND:
-    LSR     r10, r10, 1   // shift data to left
+    LSL     r10, r10, 1   // shift data to left
     SUB     r11, r11, 1     // decrement bit counter
 CLKLOW:    
     SUB     r0, r0, 1     // decrement the counter by 1 and loop (next line)
     QBNE    CLKLOW, r0, 0     // check if the count is still low                 
 
-    QBEQ    SPITRDONE, r11, 0  // The write state needs to be set right here -- bit 31 shifted left
 
     SET     r30.t3         // set the clock high
     MOV     r0, TIME_CLOCK     // time for clock high
 CLKHIGH:    
     SUB     r0, r0, 1     // decrement the counter by 1 and loop (next line)
     QBNE    CLKHIGH, r0, 0     // check if the count is still low                 
+
+    QBEQ    SPITRDONE, r11, 0  // The write state needs to be set right here -- bit 31 shifted left
     QBA     CYCLEST
 
 SPITRDONE:
+    CLR     r30.t3
     MOV     r0, TIME_CLOCK     // time for clock high
 CSLOW:
     SUB     r0, r0, 1     // decrement the counter by 1 and loop (next line)
     QBNE    CSLOW, r0, 0     // check if the count is still low                 
     SET     r30.t5              // set CS pin high
-    CLR     r30.t2
 
     RET

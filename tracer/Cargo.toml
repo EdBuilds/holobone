@@ -1,5 +1,5 @@
 [package]
-name = "parser"
+name = "tracer"
 version = "0.1.0"
 authors = ["Tamas Feher <ta.f@automata.tech>"]
 edition = "2018"
@@ -8,9 +8,6 @@ edition = "2018"
 
 [dependencies]
 svgtypes = "0.5.0"
-clap = "2.33.0"
-sdl2 = "0.33.0"
-xmlparser = "0.13.0"
 lyon_geom = "0.15.0"
 
 
