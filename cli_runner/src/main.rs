@@ -1,17 +1,14 @@
 use svgtypes::PathParser;
 use svgtypes::PathSegment;
-use clap::{Arg, App};
+use clap::{Arg, App, value_t_or_exit};
 use xmlparser;
 use std::fs;
-use xmlparser::Token::Attribute;
-mod tracer;
-
-
-extern crate sdl2;
-use sdl2::pixels::Color;
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
+use tracer::{generate_trace_from_segments, LaserPoint};
+use std::{thread, time};
 use std::time::Duration;
+use pruif::{Sample};
+use pru_control::{Frequencies};
+use pruif::{Cape};
 
 fn main() {
     let matches = App::new("Holobone")
@@ -43,6 +40,7 @@ fn main() {
             .long("deviation")
             .takes_value(true)
             .help("Maximum allowable displacement in deg"))
+        .arg_from_usage("<Frequencies> 'Dac sampling frequency'")
         .arg(Arg::with_name("dist")
             .short("d")
             .long("distance")
@@ -52,6 +50,7 @@ fn main() {
 
 
     let myfile = matches.value_of("file");
+    let freq = value_t_or_exit!(matches.value_of("Frequencies"), Frequencies);
     let mut paths:Vec<PathSegment> = Vec::new();
     match myfile {
         None => println!("No input file specified. Exiting now."),
@@ -65,7 +64,7 @@ fn main() {
                             xmlparser::Token::Attribute {prefix, local, value, span} => {
                                 if local.as_str().eq("d") {
                                     let p = PathParser::from(value.as_ref());
-                                    let mut line_to_initial = PathSegment::LineTo { abs: true, x: 0.0, y: 0.0};
+                                    let mut line_to_initial = PathSegment::LineTo { abs: false, x: 0.0, y: 0.0};
                                     for wrapped_path_segment in p {
                                         match wrapped_path_segment {
                                             Err(error) => {}
@@ -73,15 +72,8 @@ fn main() {
                                                 // If the segment is a closure, we replace it with
                                                 // a LineTo command
                                                 match path_segment {
-                                                    PathSegment::MoveTo { abs, x, y } => {
-                                                        println!("initial point detected! x:{}, y:{}", x, y);
-                                                        line_to_initial = PathSegment::LineTo { abs, x, y };
-                                                        paths.push(path_segment);
-                                                    }
-                                                    PathSegment::ClosePath { abs} => {
-                                                        paths.push(path_segment);
-                                                    }
                                                     _ => {
+                                                        println!("{:?}", path_segment);
                                                         paths.push(path_segment);
                                                     }
                                                 }
@@ -102,59 +94,60 @@ fn main() {
             //}
         }
     }
-    println!("Starting visual debugging");
-    let points1 = tracer::tracer::generate2dtrace(&paths, &10.0f64, &20000.0f64, &1000.0f64, &20000f64);
-    let points2 = tracer::tracer::generate2dtrace(&paths, &10.0f64, &160000.0f64, &1000.0f64, &20000f64);
-    let sdl_context = sdl2::init().expect("Ding");
-    let video_subsystem = sdl_context.video().expect("Ding");
+    let mut points = generate_trace_from_segments(&paths, &10.0f64, &100.0f64, &10000.0f64, &20000f64);
+    let corners = find_corners(&points);
 
-    let window = video_subsystem.window("rust-sdl2 demo: Video", 800, 600)
-        .position_centered()
-        .opengl()
-        .build()
-        .map_err(|e| e.to_string()).expect("Ding");
+    println!("{:?}", corners);
+    normalize(&mut points, corners);
+    println!("{:?}", points);
+    let samples = convert_to_sample(points);
+    let mut capemgr = pruif::Cape::new().unwrap();
+    capemgr.push_command(samples, true);
+    capemgr.start(freq);
+    thread::sleep(time::Duration::from_millis(10000000));
+}
 
-    let mut canvas = window.into_canvas().build().map_err(|e| e.to_string()).expect("Ding");
-    let on1_color = Color::RGB(0xFE, 0x80, 0x19);
-    let off1_color = Color::RGB(0xB8, 0xBB, 0x26);
-    let on2_color = Color::RGB(0xB1, 0x62, 0x86);
-    let off2_color = Color::RGB(0x45, 0x85, 0x88);
-    canvas.set_draw_color(Color::RGB(28, 28, 28));
-    canvas.clear();
-    canvas.set_draw_color(Color::RGB(0xFE, 80, 19));
-    for point in points1 {
-        if (point.on) {
-            canvas.set_draw_color(on1_color);
-        } else {
-            canvas.set_draw_color(off1_color);
-        }
-        canvas.draw_point(sdl2::rect::Point::new(point.x.floor() as i32, point.y.floor() as i32)).expect("Dong")
+#[derive(Debug)]
+pub struct Corners {
+    pub bottom: f64,
+    pub left: f64,
+    pub top: f64,
+    pub right: f64,
+}
+
+fn find_corners(points: &Vec<LaserPoint>) -> Corners {
+    points.iter().fold(Corners{bottom: std::f64::MAX, left: std::f64::MAX, top: std::f64::MIN, right: std::f64::MIN},
+                       |mut corner, point| {
+                           if point.x.lt(&corner.left) {
+                               corner.left = point.x;
+                           }
+                           if point.x.gt(&corner.right) {
+                               corner.right = point.x;
+                           }
+                           if point.y.lt(&corner.bottom) {
+                               corner.bottom = point.y;
+                           }
+                           if point.y.gt(&corner.top) {
+                               corner.top = point.y;
+                           }
+                           corner})
+}
+fn normalize(points: &mut Vec<LaserPoint>, corners: Corners) {
+    let x_offset = (corners.left + corners.right) / 2.0;
+    let y_offset = (corners.top + corners.bottom) / 2.0;
+    let x_scale = (corners.right - corners.left) / 2.0;
+    let y_scale = (corners.top - corners.bottom) / 2.0;
+    for point in points.iter_mut(){
+        point.x -= x_offset;
+        point.y -= y_offset;
+        point.x /= x_scale;
+        point.y /= y_scale;
     }
-    for point in points2 {
-        if (point.on) {
-            canvas.set_draw_color(on2_color);
-        } else {
-            canvas.set_draw_color(off2_color);
-        }
-        canvas.draw_point(sdl2::rect::Point::new(point.x.floor() as i32, point.y.floor() as i32)).expect("Dong")
-    }
-    canvas.present();
-    let mut event_pump = sdl_context.event_pump().expect("Ding");
-
-    'running: loop {
-        for event in event_pump.poll_iter() {
-            match event {
-                Event::Quit {..} | Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
-                    break 'running
-                },
-                _ => {}
-            }
-        }
-
-        //canvas.clear();
-        canvas.present();
-        ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 30));
-        // The rest of the game loop goes here...
-    }
-    println!("Ending visual debugging");
+}
+fn convert_to_sample(points: Vec<LaserPoint>) -> Vec<Sample> {
+    points.iter().map(|point|Sample{
+        voltage_x: (point.x * 5f64) as f32,
+        voltage_y: (point.y * 5f64) as f32,
+        laser_on: true
+    }).collect()
 }

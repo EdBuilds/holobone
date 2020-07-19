@@ -1,0 +1,15 @@
+[package]
+name = "cli_runner"
+version = "0.1.0"
+authors = ["Tamas Feher <ta.f@automata.tech>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = "2.33.0"
+svgtypes = "0.5.0"
+xmlparser = "0.13.0"
+tracer = {path = "../tracer"}
+pru_control = {path = "../pru_control"}
+pruif = {path = "../pruif"}

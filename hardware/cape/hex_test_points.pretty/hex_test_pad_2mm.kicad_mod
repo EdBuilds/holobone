@@ -1,0 +1,16 @@
+(module hex_test_pad_2mm (layer F.Cu) (tedit 5EADE0E4)
+  (fp_text reference REF** (at 0 -2) (layer F.SilkS)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value hex_test_pad_2mm (at 0 2.54) (layer F.Fab)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (pad 1 smd custom (at 0 0) (size 1 1) (layers F.Cu F.Paste F.Mask)
+    (zone_connect 0)
+    (options (clearance outline) (anchor rect))
+    (primitives
+      (gr_poly (pts
+         (xy -1 0) (xy -0.5 0.866) (xy 0.5 0.866) (xy 1 0) (xy 0.5 -0.866)
+         (xy -0.5 -0.866)) (width 0))
+    ))
+)

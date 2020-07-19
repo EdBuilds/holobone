@@ -1,0 +1,8 @@
+(module HoloBone_logo_copper_holo (layer F.Cu) (tedit 5EB985D9)
+  (fp_text reference REF** (at 0 0.5) (layer F.SilkS)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+  (fp_text value HoloBone_logo_copper_holo (at 0 -0.5) (layer F.Fab)
+    (effects (font (size 1 1) (thickness 0.15)))
+  )
+)
