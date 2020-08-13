@@ -6,9 +6,11 @@ use std::fs;
 use tracer::{generate_trace_from_segments, LaserPoint};
 use std::{thread, time};
 use std::time::Duration;
-use pruif::{Sample};
+use pruif::{Sample, Cape};
 use pru_control::{Frequencies};
-use pruif::{Cape};
+extern crate ctrlc;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 
 fn main() {
     let matches = App::new("Holobone")
@@ -99,12 +101,21 @@ fn main() {
 
     println!("{:?}", corners);
     normalize(&mut points, corners);
-    println!("{:?}", points);
     let samples = convert_to_sample(points);
     let mut capemgr = pruif::Cape::new().unwrap();
     capemgr.push_command(samples, true);
     capemgr.start(freq);
-    thread::sleep(time::Duration::from_millis(10000000));
+    let running = Arc::new(AtomicBool::new(true));
+    let r = running.clone();
+
+    ctrlc::set_handler(move || {
+        r.store(false, Ordering::SeqCst);
+    }).expect("Error setting Ctrl-C handler");
+
+    println!("Waiting for Ctrl-C...");
+    while running.load(Ordering::SeqCst) {}
+    drop(capemgr);
+    println!("Got it! Exiting...");
 }
 
 #[derive(Debug)]

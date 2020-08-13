@@ -15,7 +15,15 @@
         pub x: f64,
         pub y: f64,
     }
+    pub fn normalize_path(path: &mut Vec<PathSegment>) {
+        let mut top = std::f64::MIN;
+        let mut right = std::f64::MIN;
+        let mut bottom = std::f64::MAX;
+        let mut right = std::f64::MAX;
+        for segment in path {
+        }
 
+    }
     pub fn generate_trace_from_segments(path: &Vec<PathSegment>,
                                         max_dev: &f64,
                                         max_vel: &f64,
@@ -227,3 +235,20 @@
         return besier_points;
     }
 
+    #[cfg(test)]
+    mod tests {
+        // Note this useful idiom: importing names from outer (for mod tests) scope.
+        use super::*;
+
+        #[test]
+        fn test_normlize_path() {
+
+        }
+
+        #[test]
+        fn test_bad_add() {
+            // This assert would fire and test will fail.
+            // Please note, that private functions can be tested too!
+            assert_eq!(bad_add(1, 2), 3);
+        }
+    }

@@ -2,7 +2,7 @@
 extern crate bitflags;
 #[macro_use]
 extern crate bitfield;
-extern crate prusst;
+//extern crate prusst;
 use std::collections::VecDeque;
 use std::{result, time};
 use std::vec;
@@ -10,7 +10,6 @@ use std::vec;
 // TODO: this value could be stored in the eeprom
 const DAC_MAX: u16 = ((1<<12)-1);
 const V_TO_DAC_CODE: f32 = (DAC_MAX as f32 / 10.0);
-use prusst::{Evtout, IntcConfig, MemSegment, Pruss, Sysevt};
 
 use std::borrow::BorrowMut;
 use std::fs::File;
@@ -24,7 +23,10 @@ use std::collections::vec_deque::Iter;
 use std::sync::atomic::{AtomicBool, Ordering};
 use pru_control::{SampleScaled, CommandRegPair, Frequencies, Ctrl, PWMControlReg_t, PRU_DBUF_CAPACITY};
 use std::process::Command;
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 use visual_debugger::VisDebug;
+#[cfg(target_arch = "arm")]
+use prusst::{Evtout, IntcConfig, MemSegment, Pruss, Sysevt};
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Error {
@@ -60,7 +62,7 @@ pub struct Cape {
 }
 
 impl Cape {
-    pub fn new() -> Result<Cape, prusst::Error> {
+    pub fn new() -> Result<Cape, Error> {
         println!("{:?}", std::mem::size_of::<CommandRegPair>());
         Ok(Cape {
             member: 1,
@@ -71,6 +73,7 @@ impl Cape {
         })
     }
 
+    #[cfg(target_arch = "arm")]
     fn runner(frequency: Frequencies,
               rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>>,
               staging_buffer: Arc<Mutex<Vec<CommandRegPair>>>,
@@ -161,7 +164,6 @@ impl Cape {
                 }
             }
             irq.wait();
-            //thread::sleep(delay);
 
             {
                 let mut drained_data = Vec::new();
@@ -184,8 +186,13 @@ impl Cape {
             pruss.intc.enable_host(Evtout::E0);
 
         }
+        // Stop pru execution
+
+        ctrl.control.set(PWMControlReg_t::ENABLE, false);
     }
-    fn runner_pc(frequency: Frequencies,
+
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+    fn runner(frequency: Frequencies,
                  rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>>,
                  staging_buffer: Arc<Mutex<Vec<CommandRegPair>>>,
                  should_stop: Arc<AtomicBool>) {
@@ -230,7 +237,7 @@ impl Cape {
         let mut kill_switch = self.kill_switch.clone();
 
         self.runner_handle = Some(thread::spawn(move || {
-            Cape::runner_pc(frequency, rolling_buffer, staging_buffer, kill_switch);
+            Cape::runner(frequency, rolling_buffer, staging_buffer, kill_switch);
         }));
     }
     pub fn stop(&mut self) {

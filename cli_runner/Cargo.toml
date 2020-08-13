@@ -10,6 +10,7 @@ edition = "2018"
 clap = "2.33.0"
 svgtypes = "0.5.0"
 xmlparser = "0.13.0"
+ctrlc = "3.1.5"
 tracer = {path = "../tracer"}
 pru_control = {path = "../pru_control"}
 pruif = {path = "../pruif"}
