@@ -1,28 +1,90 @@
+mod segments;
+use crate::segments::{TraceableBoundingRect, NormalizeableSegment};
     use svgtypes::{PathParser};
     use svgtypes::PathSegment;
-    use lyon_geom::{QuadraticBezierSegment, CubicBezierSegment, Arc, SvgArc, ArcFlags};
+    use lyon_geom::{QuadraticBezierSegment, CubicBezierSegment, Arc, SvgArc, ArcFlags, LineSegment, Scalar};
     use lyon_geom::euclid::Point2D;
     use lyon_geom::euclid::UnknownUnit;
     use lyon_geom::euclid::Vector2D;
+    use lyon_geom::euclid::default::Transform2D;
+use lyon_geom::Segment;
+    use lyon_geom::traits::Transformation;
     use std::f64;
     use std::marker::PhantomData;
-    use lyon_geom::math::Angle;
+    use lyon_geom::math::{Angle, Rect};
     use std::cmp::Ordering;
+    use svg::node::element::path::Command;
+use std::borrow::Borrow;
+use num_traits::Float;
+use lyon::path::Path;
+use lyon::algorithms::walk::{RegularPattern, walk_along_path};
+use lyon::algorithms::path::PathSlice;
+use lyon::algorithms::path::iterator::*;
+use lyon::algorithms::path::math::Point;
 
-    #[derive(Debug)]
+
+#[derive(Debug)]
     pub struct LaserPoint {
         pub on: bool,
         pub x: f64,
         pub y: f64,
     }
-    pub fn normalize_path(path: &mut Vec<PathSegment>) {
-        let mut top = std::f64::MIN;
-        let mut right = std::f64::MIN;
-        let mut bottom = std::f64::MAX;
-        let mut right = std::f64::MAX;
-        for segment in path {
+    pub struct TraceableSegment {
+        //TODO: add more modifiers for the segment, eg: velocity/Opacity
+       segment: usize
+    }
+    pub struct Tracer {
+        max_displacement: f64,
+        max_velocity: f64,
+        max_acceleration: f64,
+        path: Path,
+    }
+    impl Tracer {
+        pub fn new(max_displacement:f64, max_velocity:f64, max_acceleration:f64, ) -> Self {
+            Self {
+                max_displacement,
+                max_velocity,
+                max_acceleration,
+                path: Path::new(),
+            }
         }
 
+        pub fn trace_path(&self ,path: PathSlice) -> Vec<LaserPoint> {
+            let mut dots = Vec::new();
+            let mut pattern = RegularPattern {
+                callback: &mut |position: Point, _tangent, _distance| {
+                    dots.push(LaserPoint{
+                        on: true,
+                        x: position.x as f64,
+                        y: position.y as f64
+                    });
+                    true // Return true to continue walking the path.
+                },
+                // Invoke the callback above at a regular interval of 3 units.
+                interval: 0.01,
+            };
+
+            let tolerance = 0.01; // The path flattening tolerance.
+            let start_offset = 0.0; // Start walking at the beginning of the path.
+            walk_along_path(
+                path.iter().flattened(tolerance),
+                start_offset,
+                &mut pattern
+            );
+            dots
+        }
+    }
+    pub fn normalize_path(path: &mut Vec<Box<&mut dyn NormalizeableSegment<f32>>>) {
+        let mut bounding_box = Rect::default();
+        for segment in path.iter_mut() {
+            bounding_box = bounding_box.union((*segment).bounding_rect().borrow());
+        }
+        let translation = Transform2D::create_translation(-bounding_box.origin.x, -bounding_box.origin.y);
+        let scaling = Transform2D::create_scale(bounding_box.size.width.recip(), bounding_box.size.height.recip());
+
+        for segment in path.iter_mut() {
+            (segment).transform(translation.post_transform(scaling.borrow()));
+        }
     }
     pub fn generate_trace_from_segments(path: &Vec<PathSegment>,
                                         max_dev: &f64,
@@ -239,16 +301,33 @@
     mod tests {
         // Note this useful idiom: importing names from outer (for mod tests) scope.
         use super::*;
-
         #[test]
         fn test_normlize_path() {
-
-        }
-
-        #[test]
-        fn test_bad_add() {
-            // This assert would fire and test will fail.
-            // Please note, that private functions can be tested too!
-            assert_eq!(bad_add(1, 2), 3);
+            let mut segment1= LineSegment{ from: Point2D {
+                x: -100.0 as f32,
+                y: -100.0 as f32,
+                _unit: PhantomData
+            }, to: Point2D {
+                x: 10.0 as f32,
+                y: 10.0 as f32,
+                _unit: PhantomData
+            } };
+            let mut segment2= LineSegment{ from: Point2D {
+                x: -20.0 as f32,
+                y: -20.0 as f32,
+                _unit: PhantomData
+            }, to: Point2D {
+                x: 100.0 as f32,
+                y: 100.0 as f32,
+                _unit: PhantomData
+            } };
+            let mut path = Vec::new();
+            path.push(Box::new(&mut segment1 as &mut dyn NormalizeableSegment<f32>));
+            path.push(Box::new(&mut segment2 as &mut dyn NormalizeableSegment<f32>));
+            normalize_path(&mut path);
+            assert_eq!(segment1, LineSegment{ from: Point2D { x: 0.0 as f32, y: 0.0 as f32, _unit: PhantomData },
+                to: Point2D { x: 0.55 as f32, y: 0.55 as f32, _unit: PhantomData } });
+            assert_eq!(segment2, LineSegment{ from: Point2D { x: 0.4 as f32, y: 0.4 as f32, _unit: PhantomData },
+                to: Point2D { x: 1.0 as f32, y: 1.0 as f32, _unit: PhantomData } });
         }
     }

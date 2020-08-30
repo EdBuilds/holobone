@@ -8,9 +8,16 @@ edition = "2018"
 
 [dependencies]
 clap = "2.33.0"
+svg = "0.8.0"
 svgtypes = "0.5.0"
 xmlparser = "0.13.0"
 ctrlc = "3.1.5"
+lyon_path = "0.16.0"
 tracer = {path = "../tracer"}
 pru_control = {path = "../pru_control"}
 pruif = {path = "../pruif"}
+
+[dependencies.lyon]
+version = "0.16.0"
+features = ["svg"]
+

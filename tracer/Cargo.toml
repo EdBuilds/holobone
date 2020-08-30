@@ -8,7 +8,13 @@ edition = "2018"
 
 [dependencies]
 svgtypes = "0.5.0"
+svg = "0.8.0"
+num-traits = "0.2"
 lyon_geom = "0.15.0"
+lyon_path = "0.16.0"
+
+[dependencies.lyon]
+version = "0.16.0"
 
 
 
