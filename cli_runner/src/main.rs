@@ -25,7 +25,7 @@ use lyon::algorithms::fit::fit_path;
 use lyon::svg::path_utils::build_path;
 use lyon::path::PathSlice;
 use std::marker::PhantomData;
-use std::borrow::Borrow;
+use std::borrow::{Borrow, BorrowMut};
 use tracer::Tracer;
 use lyon::lyon_tessellation::math::{Translation, Scale, Transform};
 use lyon::lyon_algorithms::math::{Rect, size, Size};
@@ -33,14 +33,25 @@ use lyon::lyon_algorithms::fit::FitStyle;
 use svgtypes::TransformListToken::Translate;
 
 mod renderer;
-use crate::renderer::Renderer;
+mod svg_renderer;
+use crate::renderer::{Renderer, RenderingError};
+use crate::svg_renderer::SvgRenderer;
+use svg::node::NodeClone;
+use crate::renderer::RenderingError::ArgumentError;
 
 fn main() {
     let matches = App::new("Holobone")
         .version("0.1.0")
         .author("Tamas Feher <fehertamas11@gmail.com>")
         .about("Hologram interface software")
-
+        .subcommand(SubCommand::with_name("svg").about("Draw the contents of an svg file")
+            .arg(Arg::with_name("file")
+                .short("f")
+                .long("file")
+                .takes_value(true)
+                .required(true)
+                .help("input SVG file"))
+        )
 
         .arg(Arg::with_name("file")
             .short("f")
@@ -62,7 +73,6 @@ fn main() {
             .long("deviation")
             .takes_value(true)
             .help("Maximum allowable displacement in deg"))
-        .arg_from_usage("<Frequencies> 'Dac sampling frequency'")
         .arg(Arg::with_name("dist")
             .short("d")
             .long("distance")
@@ -87,15 +97,15 @@ fn main() {
 
 
     let myfile = matches.value_of("file");
-    let freq = value_t_or_exit!(matches.value_of("Frequencies"), Frequencies);
+    let freq = Frequencies::Hz40000;
     let scale_arg = matches.values_of("scale");
-    let mut user_scale = Size{
+    let mut user_scale = Size {
         width: 1.0,
         height: 1.0,
         _unit: PhantomData
     };
 
-    let mut user_offset = Point{
+    let mut user_offset = Point {
         x: 0.0,
         y: 0.0,
         _unit: PhantomData
@@ -110,6 +120,8 @@ fn main() {
         }
     }
 
+    let mut renderer: Result<Box<dyn Renderer>, RenderingError> = Result::Err(RenderingError::DummyError);
+
     match matches.values_of("scale") {
         None => {},
         Some(mut arg) => {
@@ -120,92 +132,51 @@ fn main() {
         }
     }
 
-    let mut paths:Vec<PathSegment> = Vec::new();
-    let mut svg_path_builder = SvgPathBuilder::new(Path::builder());
-    let mut decoded_path = lyon_path::Path::new();
-    match myfile {
-        None => println!("No input file specified. Exiting now."),
-        Some(s) =>{
-            for event in svg::open(s).unwrap() {
-                match event {
-                    Event::Tag(Path, _, attributes) => {
-                        let data = attributes.get("d").unwrap().as_ref();
-                        let mut decoding_result = build_path(SvgPathBuilder::new(Path::builder()), data);
-                        match  decoding_result{
-                            Ok(path) => {decoded_path = decoded_path.merge(path.borrow());},
-                            Err(_) => {panic!("ugh"); },
-                        }
-                    }
-                    _ => {}
+    match matches.subcommand() {
+        ("svg", Some(args)) => {
+            // Now we have a reference to clone's matches
+            renderer = match args.value_of("file") {
+                None => Result::Err(RenderingError::ArgumentError),
+                Some(path_string) => match SvgRenderer::new(path_string) {
+                    Ok(mut initiated_renderer) => Result::Ok(Box::new(initiated_renderer)),
+                    Err(initiation_error) => Result::Err(initiation_error),
                 }
             }
         }
+        _ => {}
     }
-    let bounds = bounding_rect(decoded_path.iter());
-    let bounds = bounding_rect(decoded_path.iter());
-    let unit_rect = Rect{
-        origin: Point { x: 0.0, y: 0.0, _unit: PhantomData },
-        size: Size { width: 1.0, height: 1.0, _unit: PhantomData } };
-    let mut normalized_path = fit_path(&decoded_path, &unit_rect, FitStyle::Stretch);
-    normalized_path = normalized_path.transformed(&Transform::scale(user_scale.width, user_scale.height));
-    normalized_path = normalized_path.transformed(&Translation{
-        x: -user_offset.x,
-        y: -user_offset.y,
-        _unit: PhantomData
-    });
 
-    let tracer = Tracer::new(0.0, 0.0, 0.0);
-    let mut points = tracer.trace_path(normalized_path.as_slice());
-    println!("{:?}", points.len());
+    match renderer {
+        Err(errorMessage) => { eprintln!("Error initializing renderer: {}", errorMessage)}
+        Ok(mut boxed_renderer) => {
+            let mut initialized_renderer = boxed_renderer.as_mut();
+            let running = Arc::new(AtomicBool::new(true));
+            let r = running.clone();
 
-    let samples = convert_to_sample(points);
-    let mut capemgr = pruif::Cape::new().unwrap();
-    capemgr.push_command(samples, true);
-    capemgr.start(freq);
-    let running = Arc::new(AtomicBool::new(true));
-    let r = running.clone();
+            ctrlc::set_handler(move || {
+                r.store(false, Ordering::SeqCst);
+            }).expect("Error setting Ctrl-C handler");
 
-    ctrlc::set_handler(move || {
-        r.store(false, Ordering::SeqCst);
-    }).expect("Error setting Ctrl-C handler");
+            let mut tracer = Tracer::new(0.0, 0.0, 0.0);
+            let mut capemgr = pruif::Cape::new();
+            let mut first_run = true;
+            while running.load(Ordering::SeqCst) {
+                match initialized_renderer.update_display() {
+                    Ok(path_to_display) => {
+                        let samples = tracer.trace_path(path_to_display.as_slice());
+                        capemgr.push_command(samples, true);
+                    }
+                    Err(errorMessage) => {
+                        running.store(false, Ordering::SeqCst);
+                    }
+                }
+                if first_run {
+                    capemgr.start(Frequencies::Hz40000);
 
-    println!("Waiting for Ctrl-C...");
-    while running.load(Ordering::SeqCst) {
-
+                }
+                first_run = false;
+            }
+            drop(capemgr);
+        }
     }
-    drop(capemgr);
-    println!("Got it! Exiting...");
-}
-
-#[derive(Debug)]
-pub struct Corners {
-    pub bottom: f64,
-    pub left: f64,
-    pub top: f64,
-    pub right: f64,
-}
-
-fn find_corners(points: &Vec<LaserPoint>) -> Corners {
-    points.iter().fold(Corners{bottom: std::f64::MAX, left: std::f64::MAX, top: std::f64::MIN, right: std::f64::MIN},
-                       |mut corner, point| {
-                           if point.x.lt(&corner.left) {
-                               corner.left = point.x;
-                           }
-                           if point.x.gt(&corner.right) {
-                               corner.right = point.x;
-                           }
-                           if point.y.lt(&corner.bottom) {
-                               corner.bottom = point.y;
-                           }
-                           if point.y.gt(&corner.top) {
-                               corner.top = point.y;
-                           }
-                           corner})
-}
-fn convert_to_sample(points: Vec<LaserPoint>) -> Vec<Sample> {
-    points.iter().map(|point|Sample{
-        voltage_x: ((point.x-0.5) * 10f64) as f32,
-        voltage_y: ((point.y-0.5) * 10f64) as f32,
-        laser_on: true
-    }).collect()
 }

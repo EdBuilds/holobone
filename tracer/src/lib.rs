@@ -21,6 +21,7 @@ use lyon::algorithms::walk::{RegularPattern, walk_along_path};
 use lyon::algorithms::path::PathSlice;
 use lyon::algorithms::path::iterator::*;
 use lyon::algorithms::path::math::Point;
+use pruif::Sample;
 
 
 #[derive(Debug)]
@@ -49,15 +50,15 @@ use lyon::algorithms::path::math::Point;
             }
         }
 
-        pub fn trace_path(&self ,path: PathSlice) -> Vec<LaserPoint> {
+        pub fn trace_path(&self ,path: PathSlice) -> Vec<Sample> {
             let mut dots = Vec::new();
             let mut pattern = RegularPattern {
                 callback: &mut |position: Point, _tangent, _distance| {
-                    dots.push(LaserPoint{
+                    dots.push(convert_to_sample(LaserPoint{
                         on: true,
                         x: position.x as f64,
                         y: position.y as f64
-                    });
+                    }));
                     true // Return true to continue walking the path.
                 },
                 // Invoke the callback above at a regular interval of 3 units.
@@ -331,3 +332,11 @@ use lyon::algorithms::path::math::Point;
                 to: Point2D { x: 1.0 as f32, y: 1.0 as f32, _unit: PhantomData } });
         }
     }
+
+
+fn convert_to_sample(point: LaserPoint) -> Sample {
+    Sample{
+        voltage_x: ((point.x-0.5) * 10f64) as f32,
+        voltage_y: ((point.y-0.5) * 10f64) as f32,
+        laser_on: point.on}
+}

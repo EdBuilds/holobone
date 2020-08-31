@@ -449,6 +449,7 @@ dependencies = [
  "lyon_geom 0.15.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "lyon_path 0.16.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "num-traits 0.2.12 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pruif 0.1.0",
  "svg 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "svgtypes 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

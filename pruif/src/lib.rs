@@ -62,15 +62,14 @@ pub struct Cape {
 }
 
 impl Cape {
-    pub fn new() -> Result<Cape, Error> {
-        println!("{:?}", std::mem::size_of::<CommandRegPair>());
-        Ok(Cape {
+    pub fn new() -> Cape {
+        Cape {
             member: 1,
             runner_handle: None,
             rolling_buffer: Arc::new(Mutex::new(VecDeque::new())),
             staging_buffer: Arc::new(Mutex::new(Vec::new())),
             kill_switch: Arc::new(AtomicBool::new(false)),
-        })
+        }
     }
 
     #[cfg(target_arch = "arm")]

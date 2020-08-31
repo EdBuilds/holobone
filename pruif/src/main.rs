@@ -4,7 +4,7 @@ use pruif::{Sample};
 use pru_control::{Frequencies};
 
 fn main() {
-    let mut capemgr = pruif::Cape::new().unwrap();
+    let mut capemgr = pruif::Cape::new();
     let mut commands = Vec::with_capacity(10);
     for i in 0..200 {
         let mut angle = i as f32 / 200.0 * std::f32::consts::PI * 2.0;
