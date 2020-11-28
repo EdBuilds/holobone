@@ -1,10 +1,12 @@
 // PRU program to communicate to the MCPXXXX family of SPI ADC ICs. The program 
 // generates the SPI signals that are required to receive samples. To use this 
 // program as is, use the following wiring configuration:
+//   Laser On        :   P9_25    pr1_pru0_pru_r30_7  r30.t7
 //   Chip Select (CS):   P9_27    pr1_pru0_pru_r30_5  r30.t5
 //   MOSI            :   P9_29    pr1_pru0_pru_r30_1  r30.t1
 //   MISO            :   P9_28    pr1_pru0_pru_r31_3  r31.t3
 //   CLK             :   P9_30    pr1_pru0_pru_r30_2  r30.t2
+//   LDAC            :   P9_31    pr1_pru0_pru_r30_0  r30.t0
 //   Sample Clock    :   P8_46    pr1_pru1_pru_r30_1  -- for testing only
 // This program was writen by Derek Molloy to align with the content of the book 
 // Exploring BeagleBone. See exploringbeaglebone.com/chapter13/

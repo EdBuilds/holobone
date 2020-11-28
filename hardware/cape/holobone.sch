@@ -14,325 +14,16 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L holobone:ST1S50 U6
-U 1 1 5E8DF3DF
-P 8400 5000
-F 0 "U6" H 8000 5300 50  0000 L CNN
-F 1 "ST1S50" H 8500 5300 50  0000 L CNN
-F 2 "Package_DFN_QFN:DFN-10-1EP_3x3mm_P0.5mm_EP1.65x2.38mm" H 8550 5550 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/1947270.pdf" H 8550 5550 50  0001 C CNN
-F 4 "https://uk.farnell.com/stmicroelectronics/st1s50pur/dc-dc-conv-sync-buck-500khz-vfdfn/dp/2460739?st=ST1S50" H 8400 5000 50  0001 C CNN "Store"
-	1    8400 5000
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+15V #PWR037
-U 1 1 5E8E3EAF
-P 6350 4700
-F 0 "#PWR037" H 6350 4550 50  0001 C CNN
-F 1 "+15V" H 6365 4873 50  0000 C CNN
-F 2 "" H 6350 4700 50  0001 C CNN
-F 3 "" H 6350 4700 50  0001 C CNN
-	1    6350 4700
-	-1   0    0    -1  
-$EndComp
-$Comp
-L power:GNDD #PWR046
-U 1 1 5E8E4CF4
-P 8450 5650
-F 0 "#PWR046" H 8450 5400 50  0001 C CNN
-F 1 "GNDD" H 8454 5495 50  0000 C CNN
-F 2 "" H 8450 5650 50  0001 C CNN
-F 3 "" H 8450 5650 50  0001 C CNN
-	1    8450 5650
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:+5V #PWR050
 U 1 1 5E8E590D
-P 10300 4600
-F 0 "#PWR050" H 10300 4450 50  0001 C CNN
-F 1 "+5V" H 10315 4773 50  0000 C CNN
-F 2 "" H 10300 4600 50  0001 C CNN
-F 3 "" H 10300 4600 50  0001 C CNN
-	1    10300 4600
+P 10350 4500
+F 0 "#PWR050" H 10350 4350 50  0001 C CNN
+F 1 "+5V" H 10365 4673 50  0000 C CNN
+F 2 "" H 10350 4500 50  0001 C CNN
+F 3 "" H 10350 4500 50  0001 C CNN
+	1    10350 4500
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR038
-U 1 1 5E8E70BC
-P 6350 5750
-F 0 "#PWR038" H 6350 5500 50  0001 C CNN
-F 1 "GND" H 6355 5577 50  0000 C CNN
-F 2 "" H 6350 5750 50  0001 C CNN
-F 3 "" H 6350 5750 50  0001 C CNN
-	1    6350 5750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R20
-U 1 1 5E8E8319
-P 9300 4850
-F 0 "R20" H 9359 4896 50  0000 L CNN
-F 1 "147K" H 9359 4805 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 9230 4850 50  0001 C CNN
-F 3 "http://industrial.panasonic.com/cdbs/www-data/pdf/RDO0000/AOA0000C331.pdf" H 9300 4850 50  0001 C CNN
-F 4 "https://uk.farnell.com/panasonic/erjp06f1473v/res-147k-1-0-5w-0805-thick-film/dp/2326712" H 9300 4850 50  0001 C CNN "Store"
-	1    9300 4850
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:L L1
-U 1 1 5E8EB39C
-P 9150 4700
-F 0 "L1" V 9340 4700 50  0000 C CNN
-F 1 "47 uH" V 9249 4700 50  0000 C CNN
-F 2 "Inductor_SMD:L_12x12mm_H8mm" H 9150 4700 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2138022.pdf" H 9150 4700 50  0001 C CNN
-F 4 "https://uk.farnell.com/epcos/b82477g4473m000/inductor-47uh-2-5a-20-smd/dp/7430400" V 9150 4700 50  0001 C CNN "Store"
-	1    9150 4700
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	9000 4700 9000 4800
-Wire Wire Line
-	9000 4800 8900 4800
-Wire Wire Line
-	8900 5000 9300 5000
-Wire Wire Line
-	9300 4700 9600 4700
-$Comp
-L power:GNDD #PWR049
-U 1 1 5E904419
-P 9600 5400
-F 0 "#PWR049" H 9600 5150 50  0001 C CNN
-F 1 "GNDD" H 9604 5245 50  0000 C CNN
-F 2 "" H 9600 5400 50  0001 C CNN
-F 3 "" H 9600 5400 50  0001 C CNN
-	1    9600 5400
-	1    0    0    -1  
-$EndComp
-Connection ~ 9600 4700
-$Comp
-L Device:C_Small C16
-U 1 1 5E91983C
-P 8600 4500
-F 0 "C16" V 8371 4500 50  0000 C CNN
-F 1 "0.1uF" V 8462 4500 50  0000 C CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 8638 4350 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2802608.pdf" H 8600 4500 50  0001 C CNN
-F 4 "https://uk.farnell.com/tdk/cga4j2x7r2a104k125aa/cap-0-1-f-100v-10-x7r-0805/dp/2210962" H 8600 4500 50  0001 C CNN "Store"
-	1    8600 4500
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	8450 4650 8450 4500
-Wire Wire Line
-	9000 4500 9000 4700
-Connection ~ 9000 4700
-Wire Wire Line
-	9300 5600 8550 5600
-$Comp
-L Device:R_Small R14
-U 1 1 5E92FB9C
-P 8350 4050
-F 0 "R14" H 8409 4096 50  0000 L CNN
-F 1 "16.9K" H 8409 4005 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 8280 4050 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2310790.pdf" H 8350 4050 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080516k9fkea/res-16k9-1-0-125w-0805-thick-film/dp/1652926" H 8350 4050 50  0001 C CNN "Store"
-	1    8350 4050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9300 4750 9300 4700
-Connection ~ 9300 4700
-Wire Wire Line
-	9300 4950 9300 5000
-Connection ~ 9300 5000
-Wire Wire Line
-	9600 4700 9600 4900
-$Comp
-L Device:C_Small C15
-U 1 1 5E953B68
-P 7800 5500
-F 0 "C15" H 7708 5454 50  0000 R CNN
-F 1 "1000 pF" H 7708 5545 50  0000 R CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 7838 5350 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2068140.pdf" H 7800 5500 50  0001 C CNN
-F 4 "https://uk.farnell.com/avx/08055a102jat2a/cap-1000pf-50v-5-c0g-np0-0805/dp/317457" H 7800 5500 50  0001 C CNN "Store"
-	1    7800 5500
-	-1   0    0    1   
-$EndComp
-$Comp
-L Device:R_Small R7
-U 1 1 5E959E61
-P 7800 5300
-F 0 "R7" H 7859 5346 50  0000 L CNN
-F 1 "10K" H 7859 5255 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 7730 5300 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2310790.pdf" H 7800 5300 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080510k0fkea/res-10k-1-0-125w-0805-thick-film/dp/1469856" H 7800 5300 50  0001 C CNN "Store"
-	1    7800 5300
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C_Small C14
-U 1 1 5E95ED38
-P 7150 5300
-F 0 "C14" H 7058 5254 50  0000 R CNN
-F 1 "22nF" H 7058 5345 50  0000 R CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 7188 5150 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2237835.pdf" H 7150 5300 50  0001 C CNN
-F 4 "https://uk.farnell.com/avx/08055c223kat2a/cap-0-022-f-50v-10-x7r-0805/dp/578198?st=22nF" H 7150 5300 50  0001 C CNN "Store"
-	1    7150 5300
-	-1   0    0    1   
-$EndComp
-$Comp
-L Device:C_Small C12
-U 1 1 5E95F76E
-P 6750 5300
-F 0 "C12" H 6658 5254 50  0000 R CNN
-F 1 "3.3uF" H 6658 5345 50  0000 R CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 6788 5150 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2792994.pdf" H 6750 5300 50  0001 C CNN
-F 4 "https://uk.farnell.com/tdk/c2012x7r1e335k125ab/cap-3-3-f-25v-10-x7r-0805/dp/2346942" H 6750 5300 50  0001 C CNN "Store"
-	1    6750 5300
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	7900 5100 7800 5100
-Wire Wire Line
-	7800 5100 7800 5200
-Wire Wire Line
-	7150 5000 7150 5200
-Wire Wire Line
-	6750 4900 6750 5200
-Wire Wire Line
-	7150 5400 7150 5600
-Wire Wire Line
-	6750 5400 6750 5600
-$Comp
-L Device:C_Small C10
-U 1 1 5E97726E
-P 6350 5300
-F 0 "C10" H 6258 5254 50  0000 R CNN
-F 1 "10uF" H 6258 5345 50  0000 R CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 6388 5150 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2792994.pdf" H 6350 5300 50  0001 C CNN
-F 4 "https://uk.farnell.com/tdk/c2012x5r1e106k125ab/cap-10-f-25v-10-x5r-0805/dp/2346927" H 6350 5300 50  0001 C CNN "Store"
-	1    6350 5300
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	6350 4800 6350 5200
-Wire Wire Line
-	6350 4700 6350 4800
-Connection ~ 6350 4800
-$Comp
-L Device:C_Small C17
-U 1 1 5E925891
-P 9600 5000
-F 0 "C17" V 9371 5000 50  0000 C CNN
-F 1 "2.2uF" V 9462 5000 50  0000 C CNN
-F 2 "Capacitor_SMD:C_0805_2012Metric" H 9638 4850 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2792994.pdf" H 9600 5000 50  0001 C CNN
-F 4 "https://uk.farnell.com/tdk/c2012x5r1h225k125ab/cap-2-2-f-50v-10-x5r-0805/dp/2346931" H 9600 5000 50  0001 C CNN "Store"
-	1    9600 5000
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	9600 5400 9600 5100
-$Comp
-L Device:R_Small R6
-U 1 1 5E941492
-P 7500 5300
-F 0 "R6" H 7559 5346 50  0000 L CNN
-F 1 "4.7M" H 7559 5255 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 7430 5300 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2310790.pdf" H 7500 5300 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw08054m70fkea/res-4m7-1-0-125w-0805-thick-film/dp/2139201" H 7500 5300 50  0001 C CNN "Store"
-	1    7500 5300
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7500 5200 7500 5000
-Wire Wire Line
-	7500 5400 7500 5600
-Wire Wire Line
-	7500 5600 7800 5600
-Connection ~ 7800 5600
-Wire Wire Line
-	7500 5000 7900 5000
-Wire Wire Line
-	7800 5600 8450 5600
-Wire Wire Line
-	8350 5350 8350 5500
-Wire Wire Line
-	6350 5400 6350 5750
-Connection ~ 6350 5750
-Connection ~ 8450 5600
-Wire Wire Line
-	8450 5350 8450 5600
-Wire Wire Line
-	8450 5650 8450 5600
-Wire Wire Line
-	9300 5450 9300 5600
-Wire Wire Line
-	6350 4800 7900 4800
-Wire Wire Line
-	6750 4900 7900 4900
-Wire Wire Line
-	6750 5600 7150 5600
-Connection ~ 7150 5600
-Wire Wire Line
-	7150 5600 7500 5600
-Connection ~ 7500 5600
-Wire Wire Line
-	6350 5750 8350 5750
-Wire Wire Line
-	7150 5000 7500 5000
-Connection ~ 7500 5000
-$Comp
-L Device:R_Small R17
-U 1 1 5EA0CFFD
-P 8850 4500
-F 0 "R17" H 8909 4546 50  0000 L CNN
-F 1 "10R" H 8909 4455 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 8780 4500 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2310790.pdf4.12" H 8850 4500 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080510r0fkea/res-10r-1-0-125w-0805-thick-film/dp/1469859" H 8850 4500 50  0001 C CNN "Store"
-	1    8850 4500
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	8500 4500 8450 4500
-Wire Wire Line
-	8750 4500 8700 4500
-Wire Wire Line
-	9000 4500 8950 4500
-$Comp
-L power:+3.3V #PWR045
-U 1 1 5E93208D
-P 8350 3900
-F 0 "#PWR045" H 8350 3750 50  0001 C CNN
-F 1 "+3V3" H 8350 4040 50  0000 C CNN
-F 2 "" H 8350 3900 60  0000 C CNN
-F 3 "" H 8350 3900 60  0000 C CNN
-	1    8350 3900
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8350 3950 8350 3900
-Text GLabel 9300 4200 2    50   Input ~ 0
-POWER_GOOD
-Wire Wire Line
-	8350 4150 8350 4200
-Wire Wire Line
-	9300 4200 8350 4200
-Connection ~ 8350 4200
-Wire Wire Line
-	8350 4200 8350 4650
 $Comp
 L power:+3.3V #PWR035
 U 1 1 5E9951D8
@@ -378,25 +69,25 @@ Wire Wire Line
 $Comp
 L Amplifier_Operational:TL084 U3
 U 1 1 5EA6DD56
-P 8000 2750
-F 0 "U3" H 8000 2950 50  0000 C CNN
-F 1 "TL084" H 8000 3026 50  0001 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 7950 2850 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 8050 2950 50  0001 C CNN
-F 4 "https://uk.farnell.com/texas-instruments/tl084cpwr/ic-op-amp-3mhz-13v-us-tssop-14/dp/3005142?st=TL084" H 8000 2750 50  0001 C CNN "Store"
-	1    8000 2750
+P 7600 1100
+F 0 "U3" H 7600 1300 50  0000 C CNN
+F 1 "TL084" H 7600 1376 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 7550 1200 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 7650 1300 50  0001 C CNN
+F 4 "https://uk.farnell.com/texas-instruments/tl084cpwr/ic-op-amp-3mhz-13v-us-tssop-14/dp/3005142?st=TL084" H 7600 1100 50  0001 C CNN "Store"
+	1    7600 1100
 	1    0    0    -1  
 $EndComp
 $Comp
 L Amplifier_Operational:TL084 U4
 U 2 1 5EA7A004
-P 9150 2650
-F 0 "U4" H 9150 2850 50  0000 C CNN
-F 1 "TL084" H 9150 2926 50  0001 C CNN
-F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 9100 2750 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 9200 2850 50  0001 C CNN
-F 4 "https://uk.farnell.com/texas-instruments/tl084cpwr/ic-op-amp-3mhz-13v-us-tssop-14/dp/3005142?st=TL084" H 9150 2650 50  0001 C CNN "Store"
-	2    9150 2650
+P 9150 2450
+F 0 "U4" H 9150 2650 50  0000 C CNN
+F 1 "TL084" H 9150 2726 50  0001 C CNN
+F 2 "Package_SO:TSSOP-14_4.4x5mm_P0.65mm" H 9100 2550 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 9200 2650 50  0001 C CNN
+F 4 "https://uk.farnell.com/texas-instruments/tl084cpwr/ic-op-amp-3mhz-13v-us-tssop-14/dp/3005142?st=TL084" H 9150 2450 50  0001 C CNN "Store"
+	2    9150 2450
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -436,29 +127,11 @@ F 4 "https://uk.farnell.com/texas-instruments/tl084cpwr/ic-op-amp-3mhz-13v-us-ts
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7700 2850 7700 3000
+	7300 1200 7300 1350
 Wire Wire Line
-	7700 3000 8300 3000
+	7300 1350 7900 1350
 Wire Wire Line
-	8300 3000 8300 2750
-Wire Wire Line
-	8750 2750 8850 2750
-Wire Wire Line
-	8850 2750 8850 2850
-Connection ~ 8850 2750
-Wire Wire Line
-	8850 3150 8850 3050
-Wire Wire Line
-	8850 2550 8750 2550
-Wire Wire Line
-	9050 2200 8850 2200
-Wire Wire Line
-	8850 2200 8850 2550
-Connection ~ 8850 2550
-Wire Wire Line
-	9250 2200 9450 2200
-Wire Wire Line
-	9450 2200 9450 2650
+	8850 2550 8800 2550
 Wire Wire Line
 	10000 2900 9850 2900
 Wire Wire Line
@@ -491,11 +164,6 @@ Wire Wire Line
 Wire Wire Line
 	9850 2250 9850 2450
 Wire Wire Line
-	8300 2750 8550 2750
-Connection ~ 8300 2750
-Wire Wire Line
-	8550 1550 8300 1550
-Wire Wire Line
 	9850 1450 9750 1450
 Wire Wire Line
 	9550 1450 9450 1450
@@ -508,29 +176,16 @@ Wire Wire Line
 	10200 1700 10450 1700
 Wire Wire Line
 	10450 1700 10450 1350
-Wire Wire Line
-	9450 1450 9450 950 
-Wire Wire Line
-	9450 950  9250 950 
 Connection ~ 9450 1450
-Wire Wire Line
-	9050 950  8850 950 
-Wire Wire Line
-	8850 950  8850 1350
-Wire Wire Line
-	8750 1350 8850 1350
-Connection ~ 8850 1350
-Wire Wire Line
-	8750 1550 8850 1550
 $Comp
 L power:GND #PWR043
 U 1 1 5EA8C1EE
-P 8850 1900
-F 0 "#PWR043" H 8850 1650 50  0001 C CNN
-F 1 "GND" H 8855 1727 50  0000 C CNN
-F 2 "" H 8850 1900 50  0001 C CNN
-F 3 "" H 8850 1900 50  0001 C CNN
-	1    8850 1900
+P 8650 2000
+F 0 "#PWR043" H 8650 1750 50  0001 C CNN
+F 1 "GND" H 8655 1827 50  0000 C CNN
+F 2 "" H 8650 2000 50  0001 C CNN
+F 3 "" H 8650 2000 50  0001 C CNN
+	1    8650 2000
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -550,61 +205,40 @@ Wire Wire Line
 	9700 1050 9850 1050
 Wire Wire Line
 	9850 1050 9850 1250
-Connection ~ 8850 1550
-Wire Wire Line
-	8850 1850 8850 1900
-Wire Wire Line
-	8850 1550 8850 1650
-Wire Wire Line
-	8300 1550 8300 2750
-Wire Wire Line
-	8200 1350 8550 1350
 $Comp
 L Device:R_Small R12
 U 1 1 5EC2BA48
-P 8850 1750
-F 0 "R12" H 8909 1796 50  0000 L CNN
-F 1 "11.3K" H 8909 1705 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 8780 1750 50  0001 C CNN
-F 3 "" H 8850 1750 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080511k3fkea/res-11k3-1-0-125w-0805-thick-film/dp/1652911?st=smd%20resisitor" H 8850 1750 50  0001 C CNN "Store"
-	1    8850 1750
+P 8800 1100
+F 0 "R12" H 8859 1146 50  0000 L CNN
+F 1 "11.3K" H 8859 1055 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 8730 1100 50  0001 C CNN
+F 3 "" H 8800 1100 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw080511k3fkea/res-11k3-1-0-125w-0805-thick-film/dp/1652911?st=smd%20resisitor" H 8800 1100 50  0001 C CNN "Store"
+	1    8800 1100
 	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_Small R9
-U 1 1 5EC2C37F
-P 8650 1550
-F 0 "R9" V 8709 1596 50  0000 L CNN
-F 1 "16.2K" V 8709 1505 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 8580 1550 50  0001 C CNN
-F 3 "" H 8650 1550 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080516k2fkea/res-16k2-1-0-125w-0805-thick-film/dp/1469878?st=smd%20resisitor" H 8650 1550 50  0001 C CNN "Store"
-	1    8650 1550
-	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R_Small R15
 U 1 1 5EC38E46
-P 9150 950
-F 0 "R15" V 9209 996 50  0000 L CNN
-F 1 "18.7K" V 9209 905 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 9080 950 50  0001 C CNN
-F 3 "" H 9150 950 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080518k7fkea/res-18k7-1-0-125w-0805-thick-film/dp/1652934?st=smd%20resisitor" H 9150 950 50  0001 C CNN "Store"
-	1    9150 950 
+P 9150 1800
+F 0 "R15" V 9209 1846 50  0000 L CNN
+F 1 "18.7K" V 9209 1755 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 9080 1800 50  0001 C CNN
+F 3 "" H 9150 1800 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw080518k7fkea/res-18k7-1-0-125w-0805-thick-film/dp/1652934?st=smd%20resisitor" H 9150 1800 50  0001 C CNN "Store"
+	1    9150 1800
 	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R_Small R8
 U 1 1 5EC393E2
-P 8650 1350
-F 0 "R8" V 8709 1396 50  0000 L CNN
-F 1 "3.9K" V 8709 1305 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 8580 1350 50  0001 C CNN
-F 3 "" H 8650 1350 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw08053k90fkea/res-3k9-1-0-125w-0805-thick-film/dp/1652998?st=smd%20resisitor" H 8650 1350 50  0001 C CNN "Store"
-	1    8650 1350
+P 8600 1550
+F 0 "R8" V 8659 1596 50  0000 L CNN
+F 1 "3.9K" V 8659 1505 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 8530 1550 50  0001 C CNN
+F 3 "" H 8600 1550 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw08053k90fkea/res-3k9-1-0-125w-0805-thick-film/dp/1652998?st=smd%20resisitor" H 8600 1550 50  0001 C CNN "Store"
+	1    8600 1550
 	0    -1   -1   0   
 $EndComp
 Text GLabel 5800 1950 0    50   Input ~ 0
@@ -623,16 +257,16 @@ Wire Wire Line
 Wire Wire Line
 	10700 3000 9450 3000
 Wire Wire Line
-	9450 3000 9450 2650
+	9450 3000 9450 2850
 $Comp
 L power:GND #PWR044
 U 1 1 5EA3260B
-P 8850 3150
-F 0 "#PWR044" H 8850 2900 50  0001 C CNN
-F 1 "GND" H 8855 2977 50  0000 C CNN
-F 2 "" H 8850 3150 50  0001 C CNN
-F 3 "" H 8850 3150 50  0001 C CNN
-	1    8850 3150
+P 8650 1000
+F 0 "#PWR044" H 8650 750 50  0001 C CNN
+F 1 "GND" H 8655 827 50  0000 C CNN
+F 2 "" H 8650 1000 50  0001 C CNN
+F 3 "" H 8650 1000 50  0001 C CNN
+	1    8650 1000
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -987,13 +621,9 @@ Text GLabel 1650 5900 0    50   Input ~ 0
 SCL
 Text GLabel 2350 5900 2    50   Input ~ 0
 SDA
-Wire Wire Line
-	2350 6000 2250 6000
-Text GLabel 2350 6000 2    50   Input ~ 0
+Text GLabel 2350 6300 2    50   Input ~ 0
 SCLK
-Wire Wire Line
-	1650 5800 1750 5800
-Text GLabel 1650 5800 0    50   Input ~ 0
+Text GLabel 1650 6300 0    50   Input ~ 0
 CS_DAC
 Wire Wire Line
 	2350 6400 2250 6400
@@ -1046,19 +676,15 @@ F 3 "" H 2600 6600 60  0000 C CNN
 	1    2600 6600
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	2600 6500 2600 6400
-Wire Wire Line
-	2250 6500 2600 6500
 $Comp
 L pwr_BeagleBone:VDD_ADC #PWR014
 U 1 1 558985D8
-P 2600 6400
-F 0 "#PWR014" H 2600 6250 50  0001 C CNN
-F 1 "VDD_ADC" H 2600 6540 50  0000 C CNN
-F 2 "" H 2600 6400 60  0000 C CNN
-F 3 "" H 2600 6400 60  0000 C CNN
-	1    2600 6400
+P 2650 6300
+F 0 "#PWR014" H 2650 6150 50  0001 C CNN
+F 1 "VDD_ADC" H 2650 6450 50  0000 C CNN
+F 2 "" H 2650 6300 60  0000 C CNN
+F 3 "" H 2650 6300 60  0000 C CNN
+	1    2650 6300
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1461,14 +1087,10 @@ NoConn ~ 2250 5500
 NoConn ~ 2250 5600
 NoConn ~ 2250 5700
 NoConn ~ 2250 5800
-NoConn ~ 1750 5700
 NoConn ~ 1750 5600
 NoConn ~ 1750 5500
 NoConn ~ 1750 6000
 NoConn ~ 1750 6100
-NoConn ~ 1750 6200
-NoConn ~ 1750 6300
-NoConn ~ 2250 6300
 NoConn ~ 2250 6200
 NoConn ~ 2250 6100
 NoConn ~ 2250 6700
@@ -1481,20 +1103,6 @@ NoConn ~ 1750 6800
 NoConn ~ 1750 6700
 NoConn ~ 1750 6600
 NoConn ~ 2950 2000
-Wire Wire Line
-	9300 5000 9300 5250
-$Comp
-L Device:R_Small R21
-U 1 1 5E92E104
-P 9300 5350
-F 0 "R21" H 9359 5396 50  0000 L CNN
-F 1 "28K" H 9359 5305 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 9230 5350 50  0001 C CNN
-F 3 "http://www.farnell.com/datasheets/2310790.pdf" H 9300 5350 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080528k0fkea/res-28k-1-0-125w-0805-thick-film/dp/2138988" H 9300 5350 50  0001 C CNN "Store"
-	1    9300 5350
-	1    0    0    -1  
-$EndComp
 $Comp
 L Connector:TestPoint TP5
 U 1 1 5EB20D0F
@@ -1509,67 +1117,56 @@ $EndComp
 $Comp
 L Connector:TestPoint TP7
 U 1 1 5EB2ED40
-P 8300 3000
-F 0 "TP7" H 8242 3026 50  0000 R CNN
-F 1 "TestPoint" H 8242 3117 50  0000 R CNN
-F 2 "hex_test_points:hex_test_pad_1mm" H 8500 3000 50  0001 C CNN
-F 3 "~" H 8500 3000 50  0001 C CNN
-	1    8300 3000
+P 9350 3500
+F 0 "TP7" H 9292 3526 50  0000 R CNN
+F 1 "TestPoint" H 9292 3617 50  0000 R CNN
+F 2 "hex_test_points:hex_test_pad_1mm" H 9550 3500 50  0001 C CNN
+F 3 "~" H 9550 3500 50  0001 C CNN
+	1    9350 3500
 	-1   0    0    1   
 $EndComp
-Connection ~ 8300 3000
 $Comp
 L Connector:TestPoint TP11
 U 1 1 5EB48437
-P 9600 4600
-F 0 "TP11" H 9658 4672 50  0000 L CNN
-F 1 "TestPoint" H 9658 4627 50  0001 L CNN
-F 2 "hex_test_points:hex_test_pad_2mm" H 9800 4600 50  0001 C CNN
-F 3 "~" H 9800 4600 50  0001 C CNN
-	1    9600 4600
+P 10100 4150
+F 0 "TP11" H 10158 4222 50  0000 L CNN
+F 1 "TestPoint" H 10158 4177 50  0001 L CNN
+F 2 "hex_test_points:hex_test_pad_2mm" H 10300 4150 50  0001 C CNN
+F 3 "~" H 10300 4150 50  0001 C CNN
+	1    10100 4150
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	9600 4700 10300 4700
-Wire Wire Line
-	9600 4600 9600 4700
-Wire Wire Line
-	10300 4600 10300 4700
 $Comp
 L Connector:TestPoint TP8
 U 1 1 5EB9A5D0
-P 8400 2350
-F 0 "TP8" H 8458 2422 50  0000 L CNN
-F 1 "TestPoint" H 8458 2377 50  0001 L CNN
-F 2 "hex_test_points:hex_test_pad_1mm" H 8600 2350 50  0001 C CNN
-F 3 "~" H 8600 2350 50  0001 C CNN
-	1    8400 2350
+P 7800 2450
+F 0 "TP8" H 7858 2522 50  0000 L CNN
+F 1 "TestPoint" H 7858 2477 50  0001 L CNN
+F 2 "hex_test_points:hex_test_pad_1mm" H 8000 2450 50  0001 C CNN
+F 3 "~" H 8000 2450 50  0001 C CNN
+	1    7800 2450
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8400 2550 8550 2550
 $Comp
 L Connector:TestPoint TP6
 U 1 1 5EBCE32B
-P 8200 1200
-F 0 "TP6" H 8258 1272 50  0000 L CNN
-F 1 "TestPoint" H 8258 1227 50  0001 L CNN
-F 2 "hex_test_points:hex_test_pad_1mm" H 8400 1200 50  0001 C CNN
-F 3 "~" H 8400 1200 50  0001 C CNN
-	1    8200 1200
+P 7800 1650
+F 0 "TP6" H 7858 1722 50  0000 L CNN
+F 1 "TestPoint" H 7858 1677 50  0001 L CNN
+F 2 "hex_test_points:hex_test_pad_1mm" H 8000 1650 50  0001 C CNN
+F 3 "~" H 8000 1650 50  0001 C CNN
+	1    7800 1650
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8200 1200 8200 1350
 $Comp
 L Connector:TestPoint TP10
 U 1 1 5EBE99EF
-P 9450 2100
-F 0 "TP10" H 9508 2172 50  0000 L CNN
-F 1 "TestPoint" H 9508 2127 50  0001 L CNN
-F 2 "hex_test_points:hex_test_pad_1mm" H 9650 2100 50  0001 C CNN
-F 3 "~" H 9650 2100 50  0001 C CNN
-	1    9450 2100
+P 9450 2250
+F 0 "TP10" H 9508 2322 50  0000 L CNN
+F 1 "TestPoint" H 9508 2277 50  0001 L CNN
+F 2 "hex_test_points:hex_test_pad_1mm" H 9650 2250 50  0001 C CNN
+F 3 "~" H 9650 2250 50  0001 C CNN
+	1    9450 2250
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1583,12 +1180,6 @@ F 3 "~" H 9650 850 50  0001 C CNN
 	1    9450 850 
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	9450 850  9450 950 
-Connection ~ 9450 950 
-Wire Wire Line
-	9450 2100 9450 2200
-Connection ~ 9450 2200
 $Comp
 L Connector:TestPoint TP12
 U 1 1 5EC163AF
@@ -1699,21 +1290,6 @@ Wire Wire Line
 Wire Wire Line
 	1500 3150 1500 3300
 Connection ~ 1500 3300
-Wire Wire Line
-	8550 5350 8550 5500
-Wire Wire Line
-	8550 5500 8350 5500
-Connection ~ 8350 5500
-Wire Wire Line
-	8350 5500 8350 5750
-Wire Wire Line
-	8550 5500 8550 5600
-Connection ~ 8550 5500
-Connection ~ 8550 5600
-Wire Wire Line
-	8550 5600 8450 5600
-Wire Wire Line
-	8400 2350 8400 2550
 $Comp
 L Analog_DAC:MCP4922-EST U5
 U 1 1 5EBE8392
@@ -1750,49 +1326,49 @@ Wire Wire Line
 $Comp
 L Device:R_Small R11
 U 1 1 5ED68949
-P 8650 2550
-F 0 "R11" V 8709 2596 50  0000 L CNN
-F 1 "3.9K" V 8709 2505 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 8580 2550 50  0001 C CNN
-F 3 "" H 8650 2550 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw08053k90fkea/res-3k9-1-0-125w-0805-thick-film/dp/1652998?st=smd%20resisitor" H 8650 2550 50  0001 C CNN "Store"
-	1    8650 2550
+P 8600 2550
+F 0 "R11" V 8659 2596 50  0000 L CNN
+F 1 "3.9K" V 8659 2505 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 8530 2550 50  0001 C CNN
+F 3 "" H 8600 2550 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw08053k90fkea/res-3k9-1-0-125w-0805-thick-film/dp/1652998?st=smd%20resisitor" H 8600 2550 50  0001 C CNN "Store"
+	1    8600 2550
 	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R_Small R13
 U 1 1 5ED68FD2
-P 8650 2750
-F 0 "R13" V 8709 2796 50  0000 L CNN
-F 1 "16.2K" V 8709 2705 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 8580 2750 50  0001 C CNN
-F 3 "" H 8650 2750 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080516k2fkea/res-16k2-1-0-125w-0805-thick-film/dp/1469878?st=smd%20resisitor" H 8650 2750 50  0001 C CNN "Store"
-	1    8650 2750
+P 8600 2350
+F 0 "R13" V 8659 2396 50  0000 L CNN
+F 1 "16.2K" V 8659 2305 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 8530 2350 50  0001 C CNN
+F 3 "" H 8600 2350 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw080516k2fkea/res-16k2-1-0-125w-0805-thick-film/dp/1469878?st=smd%20resisitor" H 8600 2350 50  0001 C CNN "Store"
+	1    8600 2350
 	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R_Small R16
 U 1 1 5ED695D1
-P 8850 2950
-F 0 "R16" H 8909 2996 50  0000 L CNN
-F 1 "11.3K" H 8909 2905 50  0000 L CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 8780 2950 50  0001 C CNN
-F 3 "" H 8850 2950 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080511k3fkea/res-11k3-1-0-125w-0805-thick-film/dp/1652911?st=smd%20resisitor" H 8850 2950 50  0001 C CNN "Store"
-	1    8850 2950
+P 8800 2100
+F 0 "R16" H 8859 2146 50  0000 L CNN
+F 1 "11.3K" H 8859 2055 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 8730 2100 50  0001 C CNN
+F 3 "" H 8800 2100 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw080511k3fkea/res-11k3-1-0-125w-0805-thick-film/dp/1652911?st=smd%20resisitor" H 8800 2100 50  0001 C CNN "Store"
+	1    8800 2100
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_Small R18
 U 1 1 5ED69C6A
-P 9150 2200
-F 0 "R18" V 9209 2246 50  0000 L CNN
-F 1 "18.7K" V 9209 2155 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 9080 2200 50  0001 C CNN
-F 3 "" H 9150 2200 50  0001 C CNN
-F 4 "https://uk.farnell.com/vishay/crcw080518k7fkea/res-18k7-1-0-125w-0805-thick-film/dp/1652934?st=smd%20resisitor" H 9150 2200 50  0001 C CNN "Store"
-	1    9150 2200
+P 9100 2850
+F 0 "R18" V 9159 2896 50  0000 L CNN
+F 1 "18.7K" V 9159 2805 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 9030 2850 50  0001 C CNN
+F 3 "" H 9100 2850 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw080518k7fkea/res-18k7-1-0-125w-0805-thick-film/dp/1652934?st=smd%20resisitor" H 9100 2850 50  0001 C CNN "Store"
+	1    9100 2850
 	0    -1   -1   0   
 $EndComp
 $Comp
@@ -1843,20 +1419,6 @@ F 4 "https://uk.farnell.com/vishay/crcw080516k2fkea/res-16k2-1-0-125w-0805-thick
 	1    10100 2900
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	8400 2550 8150 2550
-Wire Wire Line
-	8150 2550 8150 2150
-Wire Wire Line
-	8150 2150 7100 2150
-Connection ~ 8400 2550
-Wire Wire Line
-	8200 1350 8150 1350
-Wire Wire Line
-	8150 1350 8150 1750
-Wire Wire Line
-	8150 1750 7100 1750
-Connection ~ 8200 1350
 Wire Wire Line
 	6400 1450 6400 1050
 Connection ~ 6400 1050
@@ -1966,7 +1528,7 @@ Wire Wire Line
 	3200 3550 3200 3650
 Wire Wire Line
 	3200 3650 2400 3650
-Text GLabel 7600 2650 0    50   Input ~ 0
+Text GLabel 7200 1000 0    50   Input ~ 0
 VREF
 Wire Wire Line
 	2800 3100 2800 3200
@@ -1974,7 +1536,7 @@ Connection ~ 2800 3200
 Wire Wire Line
 	2800 3200 3200 3200
 Wire Wire Line
-	7600 2650 7700 2650
+	7200 1000 7300 1000
 Text GLabel 6700 1350 2    50   Input ~ 0
 VREF
 Text GLabel 6700 2550 2    50   Input ~ 0
@@ -2006,4 +1568,480 @@ NoConn ~ 4550 5000
 NoConn ~ 4050 5000
 NoConn ~ 1750 5000
 NoConn ~ 2250 5000
+$Comp
+L holobone:2SK3065T100 Q?
+U 1 1 5FB4591D
+P 7700 5550
+F 0 "Q?" H 7855 5596 50  0000 L CNN
+F 1 "2SK3065T100" H 7855 5505 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-89-3_Handsoldering" H 7700 5550 50  0001 C CNN
+F 3 "http://www.farnell.com/datasheets/612773.pdf" H 7700 5550 50  0001 C CNN
+	1    7700 5550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Regulator_Linear:LM317_SOT-223 U?
+U 1 1 5FBA3575
+P 6700 4250
+F 0 "U?" H 6700 4492 50  0000 C CNN
+F 1 "LM317_SOT-223" H 6700 4401 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-223-3_TabPin2" H 6700 4500 50  0001 C CIN
+F 3 "http://www.ti.com/lit/ds/symlink/lm317.pdf" H 6700 4250 50  0001 C CNN
+F 4 "https://uk.farnell.com/on-semiconductor/lm317mstt3g/ic-linear-regulator/dp/1703412?st=lm317" H 6700 4250 50  0001 C CNN "Store"
+	1    6700 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FC033D0
+P 7200 4250
+F 0 "R?" V 7259 4296 50  0000 L CNN
+F 1 "36R" V 7259 4205 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 7130 4250 50  0001 C CNN
+F 3 "" H 7200 4250 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw080516k2fkea/res-16k2-1-0-125w-0805-thick-film/dp/1469878?st=smd%20resisitor" H 7200 4250 50  0001 C CNN "Store"
+	1    7200 4250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7100 4250 7000 4250
+Wire Wire Line
+	6700 4550 6700 4650
+Wire Wire Line
+	6300 4150 6300 4250
+Wire Wire Line
+	6300 4250 6400 4250
+$Comp
+L Device:R_Small R?
+U 1 1 5FC86743
+P 7000 5800
+F 0 "R?" V 7059 5846 50  0000 L CNN
+F 1 "5k" V 7059 5755 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 6930 5800 50  0001 C CNN
+F 3 "" H 7000 5800 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw080516k2fkea/res-16k2-1-0-125w-0805-thick-film/dp/1469878?st=smd%20resisitor" H 7000 5800 50  0001 C CNN "Store"
+	1    7000 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R?
+U 1 1 5FC88CB4
+P 7300 5550
+F 0 "R?" V 7359 5596 50  0000 L CNN
+F 1 "2k" V 7359 5505 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 7230 5550 50  0001 C CNN
+F 3 "" H 7300 5550 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw080516k2fkea/res-16k2-1-0-125w-0805-thick-film/dp/1469878?st=smd%20resisitor" H 7300 5550 50  0001 C CNN "Store"
+	1    7300 5550
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7200 5550 7000 5550
+Wire Wire Line
+	7000 5550 7000 5700
+$Comp
+L power:GND #PWR?
+U 1 1 5FCA8BC7
+P 7750 6000
+F 0 "#PWR?" H 7750 5750 50  0001 C CNN
+F 1 "GND" H 7755 5827 50  0000 C CNN
+F 2 "" H 7750 6000 50  0001 C CNN
+F 3 "" H 7750 6000 50  0001 C CNN
+	1    7750 6000
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FCAD561
+P 7000 6000
+F 0 "#PWR?" H 7000 5750 50  0001 C CNN
+F 1 "GND" H 7005 5827 50  0000 C CNN
+F 2 "" H 7000 6000 50  0001 C CNN
+F 3 "" H 7000 6000 50  0001 C CNN
+	1    7000 6000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7000 6000 7000 5900
+Wire Wire Line
+	7750 5750 7750 6000
+Wire Wire Line
+	7450 5550 7400 5550
+$Comp
+L Connector_Generic:Conn_01x03 J?
+U 1 1 5FD08179
+P 7450 5000
+F 0 "J?" H 7450 4800 50  0000 C CNN
+F 1 "Conn_01x03" H 7368 4766 50  0001 C CNN
+F 2 "Connector_JST:JST_XH_S3B-XH-A-1_1x03_P2.50mm_Horizontal" H 7450 5000 50  0001 C CNN
+F 3 "http://www.farnell.com/datasheets/2057209.pdf" H 7450 5000 50  0001 C CNN
+F 4 "https://uk.farnell.com/jst-japan-solderless-terminals/s3b-xh-a-lf-sn/header-right-angle-3way/dp/1516290?MER=sy-me-pd-mi-acce&st=JST%20XH%20S3B" H 7450 5000 50  0001 C CNN "Store"
+	1    7450 5000
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7650 5100 7750 5100
+Wire Wire Line
+	7750 5100 7750 5350
+Wire Wire Line
+	7750 4650 7750 5000
+Wire Wire Line
+	7750 5000 7650 5000
+$Comp
+L Device:R_POT RV?
+U 1 1 5FD7D335
+P 7550 4250
+F 0 "RV?" V 7343 4250 50  0000 C CNN
+F 1 "100R" V 7434 4250 50  0000 C CNN
+F 2 "Potentiometer_THT:Potentiometer_Bourns_3296W_Vertical" H 7550 4250 50  0001 C CNN
+F 3 "http://www.farnell.com/datasheets/2061261.pdf" H 7550 4250 50  0001 C CNN
+F 4 "https://uk.farnell.com/bourns/3296w-1-101lf/trimmer-25-turn-100r/dp/9353160" V 7550 4250 50  0001 C CNN "Store"
+	1    7550 4250
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	7400 4250 7350 4250
+Wire Wire Line
+	7750 4250 7700 4250
+Connection ~ 7750 4650
+Wire Wire Line
+	6700 4650 7750 4650
+$Comp
+L power:+15V #PWR?
+U 1 1 5FE8D4F6
+P 6300 4150
+F 0 "#PWR?" H 6300 4000 50  0001 C CNN
+F 1 "+15V" H 6315 4323 50  0000 C CNN
+F 2 "" H 6300 4150 50  0001 C CNN
+F 3 "" H 6300 4150 50  0001 C CNN
+	1    6300 4150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7750 4250 7750 4650
+Wire Wire Line
+	7350 4250 7350 4450
+Wire Wire Line
+	7350 4450 7550 4450
+Wire Wire Line
+	7550 4450 7550 4400
+Connection ~ 7350 4250
+Wire Wire Line
+	7350 4250 7300 4250
+$Comp
+L holobone:AP1509-50SG-13 U?
+U 1 1 5FB914FD
+P 9150 4650
+F 0 "U?" H 8900 4950 50  0000 C CNN
+F 1 "AP1509-50SG-13" H 9150 4700 50  0000 C CNN
+F 2 "Package_SO:SOP-8_3.76x4.96mm_P1.27mm" H 9150 4650 50  0001 C CNN
+F 3 "http://www.farnell.com/datasheets/608784.pdf" H 9150 4650 50  0001 C CNN
+F 4 "https://uk.farnell.com/diodes-inc/ap1509-50sg-13/ic-buck-reg-5v-2a-8sop/dp/1825323" H 9150 4650 50  0001 C CNN "Store"
+	1    9150 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+15V #PWR?
+U 1 1 5FC3E977
+P 8550 4350
+F 0 "#PWR?" H 8550 4200 50  0001 C CNN
+F 1 "+15V" H 8565 4523 50  0000 C CNN
+F 2 "" H 8550 4350 50  0001 C CNN
+F 3 "" H 8550 4350 50  0001 C CNN
+	1    8550 4350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FC45EBD
+P 8550 4750
+F 0 "C?" H 8458 4704 50  0000 R CNN
+F 1 "3.3uF" H 8458 4795 50  0000 R CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 8588 4600 50  0001 C CNN
+F 3 "http://www.farnell.com/datasheets/2792994.pdf" H 8550 4750 50  0001 C CNN
+F 4 "https://uk.farnell.com/tdk/c2012x7r1e335k125ab/cap-3-3-f-25v-10-x7r-0805/dp/2346942" H 8550 4750 50  0001 C CNN "Store"
+	1    8550 4750
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FC86328
+P 8550 5100
+F 0 "#PWR?" H 8550 4850 50  0001 C CNN
+F 1 "GND" H 8555 4927 50  0000 C CNN
+F 2 "" H 8550 5100 50  0001 C CNN
+F 3 "" H 8550 5100 50  0001 C CNN
+	1    8550 5100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9350 4950 9350 5050
+Wire Wire Line
+	9350 5050 9250 5050
+Wire Wire Line
+	8950 4950 8950 5050
+Wire Wire Line
+	9050 4950 9050 5050
+Connection ~ 9050 5050
+Wire Wire Line
+	9050 5050 8950 5050
+Wire Wire Line
+	9150 4950 9150 5050
+Connection ~ 9150 5050
+Wire Wire Line
+	9150 5050 9050 5050
+Wire Wire Line
+	9250 4950 9250 5050
+Connection ~ 9250 5050
+Wire Wire Line
+	9250 5050 9150 5050
+Wire Wire Line
+	8550 4350 8550 4500
+Wire Wire Line
+	8550 4850 8550 5050
+Wire Wire Line
+	8950 5050 8550 5050
+Connection ~ 8950 5050
+Connection ~ 8550 5050
+Wire Wire Line
+	8550 5050 8550 5100
+Wire Wire Line
+	8550 4500 8750 4500
+Connection ~ 8550 4500
+Wire Wire Line
+	8550 4500 8550 4650
+$Comp
+L Device:L L?
+U 1 1 5FE4DAF9
+P 9900 4500
+F 0 "L?" V 10090 4500 50  0000 C CNN
+F 1 "47 uH" V 9999 4500 50  0000 C CNN
+F 2 "Inductor_SMD:L_12x12mm_H8mm" H 9900 4500 50  0001 C CNN
+F 3 "http://www.farnell.com/datasheets/2138022.pdf" H 9900 4500 50  0001 C CNN
+F 4 "https://uk.farnell.com/epcos/b82477g4473m000/inductor-47uh-2-5a-20-smd/dp/7430400" V 9900 4500 50  0001 C CNN "Store"
+	1    9900 4500
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9750 4500 9650 4500
+Wire Wire Line
+	10050 4500 10100 4500
+Wire Wire Line
+	10100 4500 10100 4150
+Wire Wire Line
+	10100 4150 9150 4150
+Wire Wire Line
+	9150 4150 9150 4300
+$Comp
+L Device:D_Schottky D?
+U 1 1 5FE8B7F5
+P 9650 4750
+F 0 "D?" V 9604 4830 50  0000 L CNN
+F 1 "D_Schottky" V 9695 4830 50  0000 L CNN
+F 2 "Diode_SMD:D_SOD-123" H 9650 4750 50  0001 C CNN
+F 3 "http://www.farnell.com/datasheets/1383346.pdf" H 9650 4750 50  0001 C CNN
+F 4 "https://uk.farnell.com/nexperia/pmeg3020er-115/diode-rect-sch-30v-2a-sod123w/dp/1907687" V 9650 4750 50  0001 C CNN "Store"
+	1    9650 4750
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	9650 4600 9650 4500
+Connection ~ 9650 4500
+Wire Wire Line
+	9650 4500 9600 4500
+Wire Wire Line
+	9650 4900 9650 5050
+Wire Wire Line
+	9650 5050 9350 5050
+Connection ~ 9350 5050
+$Comp
+L Device:C_Small C?
+U 1 1 5FEC8391
+P 10350 4750
+F 0 "C?" V 10121 4750 50  0000 C CNN
+F 1 "2.2uF" V 10212 4750 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 10388 4600 50  0001 C CNN
+F 3 "http://www.farnell.com/datasheets/2792994.pdf" H 10350 4750 50  0001 C CNN
+F 4 "https://uk.farnell.com/tdk/c2012x5r1h225k125ab/cap-2-2-f-50v-10-x5r-0805/dp/2346931" H 10350 4750 50  0001 C CNN "Store"
+	1    10350 4750
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10350 4650 10350 4500
+Wire Wire Line
+	10350 4500 10100 4500
+Connection ~ 10100 4500
+Wire Wire Line
+	10350 4850 10350 5050
+Wire Wire Line
+	10350 5050 9650 5050
+Connection ~ 9650 5050
+Connection ~ 10100 4150
+Connection ~ 10350 4500
+Wire Wire Line
+	2650 6500 2650 6300
+Wire Wire Line
+	2250 6500 2650 6500
+Wire Wire Line
+	2250 6300 2350 6300
+Wire Wire Line
+	1750 6300 1650 6300
+NoConn ~ 2250 6000
+NoConn ~ 1750 5700
+NoConn ~ 1750 5800
+$Comp
+L Device:R_Small R9
+U 1 1 5EC2C37F
+P 8600 1350
+F 0 "R9" V 8659 1396 50  0000 L CNN
+F 1 "16.2K" V 8659 1305 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 8530 1350 50  0001 C CNN
+F 3 "" H 8600 1350 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/crcw080516k2fkea/res-16k2-1-0-125w-0805-thick-film/dp/1469878?st=smd%20resisitor" H 8600 1350 50  0001 C CNN "Store"
+	1    8600 1350
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9450 2450 9450 2650
+Wire Wire Line
+	9000 2850 8800 2850
+Wire Wire Line
+	8800 2850 8800 2550
+Connection ~ 8800 2550
+Wire Wire Line
+	9200 2850 9450 2850
+Connection ~ 9450 2850
+Wire Wire Line
+	9450 2850 9450 2650
+Connection ~ 8800 2350
+Wire Wire Line
+	8800 2350 8850 2350
+Wire Wire Line
+	7900 1350 7900 1100
+Wire Wire Line
+	7650 2550 7650 2150
+Wire Wire Line
+	7650 2150 7100 2150
+Wire Wire Line
+	9450 1800 9250 1800
+Connection ~ 9450 1800
+Wire Wire Line
+	8850 1550 8800 1550
+Wire Wire Line
+	8800 1800 8800 1550
+Wire Wire Line
+	8800 1800 8950 1800
+Connection ~ 8800 1550
+Wire Wire Line
+	8700 1550 8800 1550
+Wire Wire Line
+	8700 1350 8800 1350
+Wire Wire Line
+	8800 1200 8800 1350
+Connection ~ 8800 1350
+Wire Wire Line
+	8800 1350 8850 1350
+Wire Wire Line
+	9450 850  9450 1450
+Wire Wire Line
+	8800 1900 8650 1900
+Wire Wire Line
+	8650 1900 8650 2000
+Wire Wire Line
+	8500 1550 8150 1550
+Wire Wire Line
+	8150 1550 8150 1750
+Wire Wire Line
+	8500 1350 8250 1350
+Wire Wire Line
+	8800 2200 8800 2350
+Wire Wire Line
+	8800 1000 8800 900 
+Wire Wire Line
+	8800 900  8650 900 
+Wire Wire Line
+	8650 900  8650 1000
+Wire Wire Line
+	8700 2550 8800 2550
+Wire Wire Line
+	8700 2350 8800 2350
+Wire Wire Line
+	7650 2550 7800 2550
+Wire Wire Line
+	8500 2350 8250 2350
+Wire Wire Line
+	8250 2350 8250 1350
+Connection ~ 8250 1350
+Wire Wire Line
+	8250 1350 7900 1350
+Wire Wire Line
+	7100 1750 7800 1750
+Wire Wire Line
+	7800 1650 7800 1750
+Connection ~ 7800 1750
+Wire Wire Line
+	7800 1750 8150 1750
+Wire Wire Line
+	7800 2450 7800 2550
+Connection ~ 7800 2550
+Wire Wire Line
+	7800 2550 8500 2550
+Connection ~ 7900 1350
+Text GLabel 1650 6200 0    50   Input ~ 0
+LASER_ON
+Wire Wire Line
+	1650 6200 1750 6200
+Text GLabel 6850 5550 0    50   Input ~ 0
+LASER_ON
+Wire Wire Line
+	6850 5550 7000 5550
+Connection ~ 7000 5550
+$Comp
+L Device:C_Small C?
+U 1 1 601D4214
+P 9150 1950
+F 0 "C?" V 9050 1950 50  0000 C CNN
+F 1 "200p" V 9050 1800 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 9150 1950 50  0001 C CNN
+F 3 "~" H 9150 1950 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/vj0805d201kxpaj/cap-200pf-250v-10-c0g-np0-0805/dp/2134064" V 9150 1950 50  0001 C CNN "Store"
+	1    9150 1950
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 601D7B52
+P 9100 3000
+F 0 "C?" V 9200 2950 50  0000 C CNN
+F 1 "200p" V 9200 3100 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 9100 3000 50  0001 C CNN
+F 3 "~" H 9100 3000 50  0001 C CNN
+F 4 "https://uk.farnell.com/vishay/vj0805d201kxpaj/cap-200pf-250v-10-c0g-np0-0805/dp/2134064" V 9100 3000 50  0001 C CNN "Store"
+	1    9100 3000
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	9200 3000 9450 3000
+Connection ~ 9450 3000
+Wire Wire Line
+	9000 3000 8800 3000
+Wire Wire Line
+	8800 3000 8800 2850
+Connection ~ 8800 2850
+Wire Wire Line
+	8800 2000 8800 1900
+Wire Wire Line
+	9050 1950 8950 1950
+Wire Wire Line
+	8950 1950 8950 1800
+Connection ~ 8950 1800
+Wire Wire Line
+	8950 1800 9050 1800
+Wire Wire Line
+	9450 2250 9450 2450
+Connection ~ 9450 2450
+Wire Wire Line
+	9250 1950 9450 1950
+Wire Wire Line
+	9450 1950 9450 1800
 $EndSCHEMATC

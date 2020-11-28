@@ -1,3 +1,15 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP 2SK3065T100
+F http://www.farnell.com/datasheets/612773.pdf
+$ENDCMP
+#
+$CMP AP1509-50SG-13
+F http://www.farnell.com/datasheets/608784.pdf
+$ENDCMP
+#
+$CMP NSI50010YT1G
+F http://www.farnell.com/datasheets/1935547.pdf
+$ENDCMP
+#
 #End Doc Library
