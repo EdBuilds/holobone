@@ -5,6 +5,9 @@ use svg::node::element::path::{Command, Data, Position};
 use svg::node::element::tag::Path;
 use svg::parser::Event;
 
+#[macro_use]
+extern crate serde_derive;
+
 use clap::{Arg, App, value_t_or_exit, Values, SubCommand};
 use xmlparser;
 use std::fs;
@@ -34,12 +37,20 @@ use svgtypes::TransformListToken::Translate;
 
 mod renderer;
 mod svg_renderer;
+mod font_manager;
+mod text_renderer;
 use crate::renderer::{Renderer, RenderingError};
 use crate::svg_renderer::SvgRenderer;
 use svg::node::NodeClone;
 use crate::renderer::RenderingError::ArgumentError;
+use crate::font_manager::load_font;
+extern crate walkdir;
+use walkdir::WalkDir;
+use crate::text_renderer::TextAlignment;
+
 
 fn main() {
+
     let matches = App::new("Holobone")
         .version("0.1.0")
         .author("Tamas Feher <fehertamas11@gmail.com>")
@@ -129,6 +140,19 @@ fn main() {
                 arg.next().unwrap_or_default().parse::<f32>().expect("Couldn't parse offset. Give me 2 numbers!");
             user_offset.y =
                 arg.next().unwrap_or_default().parse::<f32>().expect("Couldn't parse offset. Give me 2 numbers!");
+        }
+    }
+    // Populate text_renderer for global use
+    let mut txt_renderer = text_renderer::TextRenderer::new();
+    let maybe_paths = fs::read_dir("./resources/fonts");
+    for e in WalkDir::new("./resources/fonts").into_iter().filter_map(|e| e.ok()) {
+        if e.metadata().unwrap().is_file() {
+            let maybe_font = load_font(e.path());
+            match maybe_font {
+                Ok(parsed_font) => {txt_renderer.add_font(parsed_font);},
+                _ => {}
+            }
+
         }
     }
 

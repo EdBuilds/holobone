@@ -54,6 +54,7 @@ use pruif::Sample;
             let mut dots = Vec::new();
             let mut pattern = RegularPattern {
                 callback: &mut |position: Point, _tangent, _distance| {
+
                     dots.push(convert_to_sample(LaserPoint{
                         on: true,
                         x: position.x as f64,
@@ -73,6 +74,7 @@ use pruif::Sample;
                 &mut pattern
             );
             dots
+
         }
     }
     pub fn normalize_path(path: &mut Vec<Box<&mut dyn NormalizeableSegment<f32>>>) {
@@ -336,7 +338,7 @@ use pruif::Sample;
 
 fn convert_to_sample(point: LaserPoint) -> Sample {
     Sample{
-        voltage_x: ((point.x-0.5) * 10f64) as f32,
-        voltage_y: ((point.y-0.5) * 10f64) as f32,
+        voltage_x: ((point.x) * -5f64) as f32,
+        voltage_y: ((point.y) * -5f64) as f32,
         laser_on: point.on}
 }

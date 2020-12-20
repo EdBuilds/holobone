@@ -10,9 +10,14 @@ edition = "2018"
 clap = "2.33.0"
 svg = "0.8.0"
 svgtypes = "0.5.0"
+serde = "1.0.118"
+serde-xml-rs = "0.4.0"
+serde_derive = "1.0.118"
+serde_path_to_error = "0.1.4"
 xmlparser = "0.13.0"
 ctrlc = "3.1.5"
 lyon_path = "0.16.0"
+walkdir = "2.3.1"
 tracer = {path = "../tracer"}
 pru_control = {path = "../pru_control"}
 pruif = {path = "../pruif"}

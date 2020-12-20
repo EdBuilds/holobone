@@ -40,9 +40,9 @@ impl SvgRenderer {
                     }
                 }
         let unit_rect = Rect{
-            origin: Point { x: 0.0, y: 0.0, _unit: PhantomData },
-            size: Size { width: 1.0, height: 1.0, _unit: PhantomData } };
-        let mut normalized_path = fit_path(&decoded_path, &unit_rect, FitStyle::Stretch);
+            origin: Point { x: -1.0, y: -1.0, _unit: PhantomData },
+            size: Size { width: 2.0, height: 2.0, _unit: PhantomData } };
+        let mut normalized_path = fit_path(&decoded_path, &unit_rect, FitStyle::Min);
         Result::Ok(SvgRenderer { normalized_path })
     }
 }

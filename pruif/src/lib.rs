@@ -36,6 +36,7 @@ pub enum Error {
     OtherDeviceError,
 }
 
+#[derive(Clone, Debug, PartialEq)]
 pub struct Sample {
     pub voltage_x: f32,
     pub voltage_y: f32,

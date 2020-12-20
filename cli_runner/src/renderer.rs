@@ -1,6 +1,6 @@
 use lyon_path::Path;
 use std::{io, fmt};
-use crate::renderer::RenderingError::{SvgParsingError, IOError};
+use crate::renderer::RenderingError::{SvgParsingError, StringParsingError, IOError};
 
 pub trait Renderer{
     fn update_display(&mut self) -> Result<Path, RenderingError>;
@@ -9,7 +9,9 @@ pub trait Renderer{
 pub enum RenderingError{
     ArgumentError,
     DummyError,
+    XmlParsingError,
     SvgParsingError,
+    StringParsingError,
     IOError(std::io::Error),
 }
 impl From<lyon::lyon_svg::path_utils::ParseError> for RenderingError {
@@ -23,6 +25,13 @@ impl From<std::io::Error> for RenderingError {
         IOError(error)
     }
 }
+
+impl From<std::num::ParseFloatError> for RenderingError {
+    fn from(error: std::num::ParseFloatError) -> Self {
+        StringParsingError
+    }
+}
+
 impl fmt::Display for RenderingError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
