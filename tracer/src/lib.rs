@@ -15,7 +15,6 @@ use lyon_geom::Segment;
     use std::cmp::Ordering;
     use svg::node::element::path::Command;
 use std::borrow::Borrow;
-use num_traits::Float;
 use lyon::path::Path;
 use lyon::algorithms::walk::{RegularPattern, walk_along_path};
 use lyon::algorithms::path::PathSlice;

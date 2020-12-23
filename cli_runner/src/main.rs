@@ -37,6 +37,8 @@ use svgtypes::TransformListToken::Translate;
 
 mod renderer;
 mod svg_renderer;
+mod asteroids_renderer;
+mod asteroids_game;
 mod font_manager;
 mod text_renderer;
 use crate::renderer::{Renderer, RenderingError};
@@ -47,7 +49,7 @@ use crate::font_manager::load_font;
 extern crate walkdir;
 use walkdir::WalkDir;
 use crate::text_renderer::TextAlignment;
-
+use crate::asteroids_renderer::AsteroidsRenderer;
 
 fn main() {
 
@@ -63,6 +65,7 @@ fn main() {
                 .required(true)
                 .help("input SVG file"))
         )
+        .subcommand(SubCommand::with_name("asteroids").about("play asteroids game"))
 
         .arg(Arg::with_name("file")
             .short("f")
@@ -131,7 +134,6 @@ fn main() {
         }
     }
 
-    let mut renderer: Result<Box<dyn Renderer>, RenderingError> = Result::Err(RenderingError::DummyError);
 
     match matches.values_of("scale") {
         None => {},
@@ -155,6 +157,7 @@ fn main() {
 
         }
     }
+    let mut renderer: Result<Box<dyn Renderer>, RenderingError> = Result::Err(RenderingError::DummyError);
 
     match matches.subcommand() {
         ("svg", Some(args)) => {
@@ -167,10 +170,17 @@ fn main() {
                 }
             }
         }
+        ("asteroids", Some(args)) => {
+            renderer = match AsteroidsRenderer::new(txt_renderer.borrow()) {
+                Ok(mut initiated_renderer) => Result::Ok(Box::new(initiated_renderer)),
+                Err(initiation_error) => Result::Err(initiation_error),
+            }
+        }
         _ => {}
     }
 
     match renderer {
+
         Err(errorMessage) => { eprintln!("Error initializing renderer: {}", errorMessage)}
         Ok(mut boxed_renderer) => {
             let mut initialized_renderer = boxed_renderer.as_mut();
@@ -199,6 +209,7 @@ fn main() {
 
                 }
                 first_run = false;
+                std::thread::sleep_ms(33);
             }
             drop(capemgr);
         }

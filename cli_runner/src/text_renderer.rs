@@ -40,6 +40,14 @@ impl From<()> for TextFormatter<'_> {
     }
 }
 
+impl From<TextAlignment> for TextFormatter<'_> {
+    fn from(alignment: TextAlignment) -> Self {
+        let mut return_formatter = Self::default();
+        return_formatter.alignment = alignment;
+        return_formatter
+    }
+}
+
 pub struct TextRenderer {
     fonts: HashMap<String, LineFont>
 }

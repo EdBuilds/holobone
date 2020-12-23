@@ -24,7 +24,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use pru_control::{SampleScaled, CommandRegPair, Frequencies, Ctrl, PWMControlReg_t, PRU_DBUF_CAPACITY};
 use std::process::Command;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-use visual_debugger::VisDebug;
+use visual_debugger::{VisDebug, VIS_DEBUG_DBUF_CAPACITY};
 #[cfg(target_arch = "arm")]
 use prusst::{Evtout, IntcConfig, MemSegment, Pruss, Sysevt};
 
@@ -198,7 +198,7 @@ impl Cape {
                  should_stop: Arc<AtomicBool>) {
         let (buffer_empty_sender, buffer_empty_receiver) = mpsc::channel();
 
-        let visual_debugger = VisDebug::new(&frequency, PRU_DBUF_CAPACITY, buffer_empty_sender).unwrap();
+        let visual_debugger = VisDebug::new(&frequency, VIS_DEBUG_DBUF_CAPACITY, buffer_empty_sender).unwrap();
         let mut delay = time::Duration::from_millis( match frequency {
             Frequencies::Hz1 => 1000,
             Frequencies::Hz10 => 100,
@@ -211,12 +211,10 @@ impl Cape {
            }
            {
            let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
-           while local_rolling_buffer.len() < PRU_DBUF_CAPACITY {
-               let mut local_staging_buffer = (*staging_buffer.lock().unwrap()).clone();
-               if local_staging_buffer.is_empty() { panic!("Uninitialized staging buffer!")}
-               local_rolling_buffer.append(VecDeque::from(local_staging_buffer).borrow_mut());
+           let mut local_staging_buffer = (*staging_buffer.lock().unwrap()).clone();
+           if local_staging_buffer.is_empty() { panic!("Uninitialized staging buffer!")}
+           local_rolling_buffer.append(VecDeque::from(local_staging_buffer).borrow_mut());
                //println!("Loaded staging to rolling buffer");
-           }
            }
            let empty_buffer = buffer_empty_receiver.recv().unwrap();
            //thread::sleep(delay);
@@ -224,7 +222,7 @@ impl Cape {
 
            {
                let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
-               let mut drained_data = local_rolling_buffer.drain(0..PRU_DBUF_CAPACITY).collect::<Vec<CommandRegPair>>();
+               let mut drained_data = local_rolling_buffer.drain(0..local_rolling_buffer.len()).collect::<Vec<CommandRegPair>>();
                visual_debugger.display_buffer(drained_data);
            }
        }

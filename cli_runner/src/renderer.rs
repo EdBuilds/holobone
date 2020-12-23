@@ -3,14 +3,14 @@ use std::{io, fmt};
 use crate::renderer::RenderingError::{SvgParsingError, StringParsingError, IOError};
 
 pub trait Renderer{
-    fn update_display(&mut self) -> Result<Path, RenderingError>;
-}
+    fn update_display(&mut self) -> Result<Path, RenderingError>; }
 
 pub enum RenderingError{
     ArgumentError,
     DummyError,
     XmlParsingError,
     SvgParsingError,
+    GamepadError,
     StringParsingError,
     IOError(std::io::Error),
 }

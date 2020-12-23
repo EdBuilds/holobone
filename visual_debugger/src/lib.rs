@@ -12,6 +12,7 @@ use pru_control::{CommandRegPair, Frequencies};
 use pru_control::CommandReg;
 use std::sync::mpsc::Sender;
 
+pub const VIS_DEBUG_DBUF_CAPACITY: usize = 100;
 pub struct VisDebug {
     update_handle: thread::JoinHandle<()>,
     rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>>,
@@ -27,7 +28,7 @@ impl VisDebug {
             Frequencies::Hz10 => 100,
             Frequencies::Hz100 => 10,
             Frequencies::Hz1000 => 10,
-            _ => 10,
+            _ => 1,
         });
         let mut update_handle = thread::spawn(move || {
             const ON1_COLOR: Color = Color::RGB(0xFE, 0x80, 0x19);
@@ -50,23 +51,29 @@ impl VisDebug {
                 {
                     canvas.set_draw_color(Color::RGB(28, 28, 28));
                     canvas.clear();
-                    (*local_rolling_buffer.lock().unwrap()).iter().for_each(|command_pair| {
-                        if command_pair.channelA.contains(CommandReg::LASER_ENABLE) {
-                            canvas.set_draw_color(ON2_COLOR);
-                        } else {
-                            canvas.set_draw_color(OFF2_COLOR);
+                    match local_rolling_buffer.lock(){
+                        Ok(mut roll_buf) => {
+                            (*roll_buf).iter().for_each(|command_pair| {
+                                if command_pair.channelA.contains(CommandReg::LASER_ENABLE) {
+                                    canvas.set_draw_color(ON2_COLOR);
+                                } else {
+                                    canvas.set_draw_color(OFF2_COLOR);
+                                }
+                                let x = command_pair.channelA.data() as i32 / 4;
+                                let y = command_pair.channelB.data() as i32 / 4;
+                                canvas.draw_point(sdl2::rect::Point::new(x, y)).expect("Dong")
+                            });
+                            (*roll_buf).clear();
                         }
-                        let x = command_pair.channelA.data() as i32 / 4;
-                        let y = command_pair.channelB.data() as i32 / 4;
-                        canvas.draw_point(sdl2::rect::Point::new(x, y)).expect("Dong")
-                    });
+                        _ => {break;}
+                    }
                     canvas.present();
                 }
-                (*local_rolling_buffer.lock().unwrap()).pop_front();
-                if (*local_rolling_buffer.lock().unwrap()).len() < buffer_size {
-                    buffer_empty_sender.send(0).unwrap();
+                match buffer_empty_sender.send(0) {
+                    Err(err) => {break;},
+                    _ => {},
                 }
-                thread::sleep(delay);
+                thread::sleep_ms(20);
             }
         });
 
@@ -79,4 +86,5 @@ impl VisDebug {
         let mut buffer = self.rolling_buffer.clone();
         (*buffer.lock().unwrap()).append(&mut VecDeque::from(data));
     }
+
 }

@@ -18,9 +18,15 @@ xmlparser = "0.13.0"
 ctrlc = "3.1.5"
 lyon_path = "0.16.0"
 walkdir = "2.3.1"
+gilrs = "0.8.0"
+rltk = { version = "0.8.0" }
+specs = "0.16.1"
+specs-derive = "0.4.1"
 tracer = {path = "../tracer"}
 pru_control = {path = "../pru_control"}
 pruif = {path = "../pruif"}
+euclid = "*"
+rand = "*"
 
 [dependencies.lyon]
 version = "0.16.0"
