@@ -8,6 +8,11 @@ pipeline {
 	}
         stage('Build backend') {
             steps {
+                sh "cargo build --bin web_server --release --target armv7-unknown-linux-gnueabihf"
+           }
+        }
+        stage('Build cli_runner') {
+            steps {
                 sh "cargo build --bin cli_runner --release --target armv7-unknown-linux-gnueabihf"
            }
         }
