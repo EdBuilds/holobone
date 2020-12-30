@@ -33,7 +33,12 @@
       <sourceFolder url="file://$MODULE_DIR$/web_server/examples" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/web_server/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/web_server/benches" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/frontend/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/frontend/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/frontend/tests" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/frontend/benches" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/cli_runner/target" />
+      <excludeFolder url="file://$MODULE_DIR$/frontend/target" />
       <excludeFolder url="file://$MODULE_DIR$/parser/target" />
       <excludeFolder url="file://$MODULE_DIR$/pru_control/target" />
       <excludeFolder url="file://$MODULE_DIR$/pruif/target" />

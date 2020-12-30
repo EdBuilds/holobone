@@ -5,9 +5,13 @@ use rocket::*;
 use rocket::response::content::Json;
 use rocket::request::Form;
 use rocket_contrib::templates::Template;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
+use std::io;
+use rocket::response::NamedFile;
+use std::path::PathBuf;
+use std::path::Path;
 
-#[derive(FromForm)]
+#[derive(Deserialize, Debug)]
 struct Command {
     name: String
 }
@@ -16,7 +20,7 @@ fn main() {
 
     rocket::ignite()
         .register(catchers![not_found])
-        .mount("/", routes![index])
+        .mount("/", routes![index, static_file, new_command])
         .mount("/api", routes![hello])
         .attach(Template::fairing())
         .launch();
@@ -25,6 +29,10 @@ fn main() {
 #[catch(404)]
 fn not_found(req: &Request) -> String {
     format!("Oh no! We couldn't find the requested path '{}'", req.uri())
+}
+#[get("/<path..>")]
+fn static_file(path: PathBuf) -> Option<NamedFile> {
+    NamedFile::open(Path::new("frontend/static/").join(path)).ok()
 }
 
 #[get("/hello")]
@@ -36,22 +44,10 @@ fn hello() -> Json<&'static str> {
 }
 
 #[post("/command", data = "<command_form>")]
-fn new_command(command_form: Form<Command>) -> String {
-    let command: Command = command_form.into_inner();
-    format!("Command received: {:?}", command.name)
+fn new_command(command_form: rocket_contrib::json::Json<Command>) -> String {
+    format!("Command received: {:?}", command_form)
 }
-
 #[get("/")]
-fn index() -> Template {
-    #[derive(Serialize)]
-    struct Context {
-        first_name: String,
-        last_name: String
-    }
-
-    let context = Context {
-        first_name: String::from("Kristof"),
-        last_name: String::from("")
-    };
-    Template::render("home", context)
+pub fn index() -> io::Result<NamedFile> {
+    NamedFile::open("frontend/static/index.html")
 }

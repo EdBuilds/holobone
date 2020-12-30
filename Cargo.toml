@@ -6,4 +6,5 @@ members = [
     "pru_control",
     "cli_runner",
     "web_server",
+    "frontend",
 ]
