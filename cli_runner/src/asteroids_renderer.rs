@@ -54,8 +54,8 @@ pub struct AsteroidsRenderer<'a, 'b> {
 impl <'a, 'b>AsteroidsRenderer<'a, 'b> {
 
     pub fn new(text_renderer: &'a TextRenderer) -> Result<AsteroidsRenderer<'a, 'b>, RenderingError> {
-        let mut rng = rand::thread_rng();
-        let mut gilrs = Gilrs::new();
+        let rng = rand::thread_rng();
+        let gilrs = Gilrs::new();
         let mut ecs = World::new();
         let asteroid_spawn_rate = Duration::new(5,0);
         let last_asteroid_spawn_time = Instant::now();
@@ -97,13 +97,6 @@ impl <'a, 'b>AsteroidsRenderer<'a, 'b> {
 
     }
 
-    fn run_systems(&mut self) {
-        let mut ms = MovementSimulator{};
-        ms.run_now(&self.ecs);
-        self.ecs.maintain();
-    }
-
-
     fn shuttle_update(&mut self, mut x_input: f32, mut y_input: f32, mut rot_input: f32, firing: bool) -> Option<UITelemetry>{
         // Deadzone around 0 for the input
         if x_input.abs() < 0.1 {
@@ -118,13 +111,13 @@ impl <'a, 'b>AsteroidsRenderer<'a, 'b> {
         match self.player_entity {
         Some(player_entity) => {
             let mut rigidbodies = self.ecs.write_storage::<RigidBody>();
-            let mut Poses = self.ecs.write_storage::<Pose>();
+            let mut poses = self.ecs.write_storage::<Pose>();
             let mut shuttles = self.ecs.write_storage::<Shuttle>();
             let mut guns = self.ecs.write_storage::<Gun>();
-            let mut scores = self.ecs.read_storage::<Score>();
+            let scores = self.ecs.read_storage::<Score>();
             let rigidbody = rigidbodies.get_mut(player_entity)?;
-            let pose = Poses.get_mut(player_entity)?;
-            let mut shuttle = shuttles.get_mut(player_entity)?;
+            let pose = poses.get_mut(player_entity)?;
+            let shuttle = shuttles.get_mut(player_entity)?;
             let mut gun = guns.get_mut(player_entity)?;
             let score = scores.get(player_entity)?;
             let acc_scaler = 0.0005 as f32;
@@ -207,38 +200,34 @@ impl Renderer for AsteroidsRenderer<'_, '_> {
                 } };
                 path = self.text_renderer.print("Press any key to start.", &wait_text_box, ())?;
                 while let Some(Event { id, event, time }) = self.gilrs.next_event() {
-                    match event {
-                        ButtonReleased (_,_) =>{
-                            // transitioning to running state
-                            // Create shuttle
-                            self.player_entity = Some(self.ecs
-                                .create_entity()
-                                .with(Pose{
-                                    x: 0.0,
-                                    y: 0.0,
-                                    rot: Angle::zero(),
-                                })
-                                .with(RigidBody {
-                                    velocity: vec2(0.0, 0.0),
-                                    angular_velocity: Angle::zero(),
-                                    last_update: None,
-                                    looping: true,
-                                })
-                                .with(Gun::new())
-                                .with(Shuttle::new())
-                                .with(Renderable{outline: OutlineFactory::shuttle_outline()})
-                                .with(Collider {
-                                    collider_type: ColliderType::Player,
-                                    collider_outline: OutlineFactory::shuttle_outline(),
-                                    collision_handler: player_collision_handler
-                                })
-                                .with(Score::new())
-                                .build());
-                            self.active_gamepad = Some(id);
-                            self.game_state = AsteroidsGameState::Running;
-                            },
-
-                        _ => {}
+                    if let ButtonReleased (_,_) = event {
+                        // transitioning to running state
+                        // Create shuttle
+                        self.player_entity = Some(self.ecs
+                            .create_entity()
+                            .with(Pose{
+                                x: 0.0,
+                                y: 0.0,
+                                rot: Angle::zero(),
+                            })
+                            .with(RigidBody {
+                                velocity: vec2(0.0, 0.0),
+                                angular_velocity: Angle::zero(),
+                                last_update: None,
+                                looping: true,
+                            })
+                            .with(Gun::new())
+                            .with(Shuttle::new())
+                            .with(Renderable{outline: OutlineFactory::shuttle_outline()})
+                            .with(Collider {
+                                collider_type: ColliderType::Player,
+                                collider_outline: OutlineFactory::shuttle_outline(),
+                                collision_handler: player_collision_handler
+                            })
+                            .with(Score::new())
+                            .build());
+                        self.active_gamepad = Some(id);
+                        self.game_state = AsteroidsGameState::Running;
                     }
                 }
             },
@@ -251,52 +240,31 @@ impl Renderer for AsteroidsRenderer<'_, '_> {
                 let mut firing_input = false;
                 match self.active_gamepad {
                     Some(active_gamepad) => {
-                        match self.gilrs.gamepad(active_gamepad).axis_data(Axis::RightStickX) {
-                            Some(axis_data) => {
-                                angle_input = axis_data.value();
-                            }
-                            _ => {}
+                        if let Some(axis_data) = self.gilrs.gamepad(active_gamepad).axis_data(Axis::RightStickX) {
+                            angle_input = axis_data.value();
                         }
-
-                        match self.gilrs.gamepad(active_gamepad).axis_data(Axis::LeftStickY) {
-                            Some(axis_data) => {
-                                y_axis_input = axis_data.value();
-                            }
-                            _ => {}
+                        if let Some(axis_data) = self.gilrs.gamepad(active_gamepad).axis_data(Axis::LeftStickY) {
+                            y_axis_input = axis_data.value();
                         }
-
-                        match self.gilrs.gamepad(active_gamepad).axis_data(Axis::LeftStickX) {
-                            Some(axis_data) => {
-                                x_axis_input = axis_data.value();
-                            }
-                            _ => {}
+                        if let Some(axis_data) = self.gilrs.gamepad(active_gamepad).axis_data(Axis::LeftStickX) {
+                            x_axis_input = axis_data.value();
                         }
-                        match self.gilrs.gamepad(active_gamepad).button_data(Button::RightTrigger) {
-                        Some(button_data) => {
+                        if let Some(button_data) = self.gilrs.gamepad(active_gamepad).button_data(Button::RightTrigger) {
                             firing_input = button_data.is_pressed();
-                        }
-                        _ => {}
                         }
                     },
                     _ => {println!("No gamepad found.")}
                 }
                 path = path.merge(render_entities(self.ecs.borrow()).borrow());
-                let maybe_telemetry = self.shuttle_update(x_axis_input, y_axis_input, angle_input, firing_input);
-                match maybe_telemetry {
-                    Some(telemetry) => {
-                        self.final_score = telemetry.score;
-                        match self.render_ui(telemetry){
-                            Ok(ui_path) => {
-                                path = path.merge(ui_path.borrow());
-                            }
-                            _ => {}
-                        }
+                if let Some(telemetry) = self.shuttle_update(x_axis_input, y_axis_input, angle_input, firing_input) {
+                    self.final_score = telemetry.score;
+                    if let Ok(ui_path) = self.render_ui(telemetry){
+                        path = path.merge(ui_path.borrow());
                     }
-                    _ => {}
                 }
 
                 // This dispatches all the systems in parallel (but blocking).
-                self.dispatcher.dispatch(&mut self.ecs);
+                self.dispatcher.dispatch(self.ecs.borrow());
                 self.spawn_asteroids();
                 self.ecs.maintain();
 

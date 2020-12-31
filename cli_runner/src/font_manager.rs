@@ -139,7 +139,7 @@ pub struct LineFont {
 
 pub fn load_font(file_path: &std::path::Path) -> Result<LineFont, RenderingError> {
 
-   let f = File::open(file_path).expect(&format!("Cannot open file {}", file_path.display()));
+   let f = File::open(file_path)?;
    let r = BufReader::new(f);
    let parsing_result: Result<Toplevel, _> = serde_xml_rs::de::from_reader(r);
 
@@ -158,17 +158,15 @@ pub fn load_font(file_path: &std::path::Path) -> Result<LineFont, RenderingError
        // TODO: Find a better way to iterate other than a full blown for loop
        for font_face in parsed_xml_font.defs.font.font_faces {
          let maybe_line_font_face: Result<LineFontFace, _> = font_face.try_into();
-         match maybe_line_font_face {
-            Ok(line_font_face) => {parsed_line_font.font_faces.insert(line_font_face.font_family.clone(), line_font_face);}
-            _ => {}
+         if let Ok(line_font_face) = maybe_line_font_face {
+             parsed_line_font.font_faces.insert(line_font_face.font_family.clone(), line_font_face);
          }
        }
 
        for glyph in parsed_xml_font.defs.font.glyphs {
            let maybe_line_glyph: Result<LineGlyph, _> = glyph.try_into();
-           match maybe_line_glyph {
-              Ok(line_glyph) => {parsed_line_font.glyphs.insert(line_glyph.unicode_char.clone(), line_glyph);}
-              _ => {}
+           if let Ok(line_glyph) = maybe_line_glyph {
+               parsed_line_font.glyphs.insert(line_glyph.unicode_char, line_glyph);
            }
        }
 

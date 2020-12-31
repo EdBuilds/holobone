@@ -41,7 +41,7 @@ impl<'a> System<'a> for CollisionManager {
                 for evt in transformed_other_collider_outline.iter() {
                     // This needs some love
                     let test_point = evt.from();
-                    let mut transformed_collider_outline = collider.collider_outline.transformed(&rotation).transformed(&translation);
+                    let transformed_collider_outline = collider.collider_outline.transformed(&rotation).transformed(&translation);
                     if hit_test_path(&test_point, transformed_collider_outline.iter(), FillRule::NonZero, 0.01) {
                         collision = true;
                         break;
@@ -55,8 +55,8 @@ impl<'a> System<'a> for CollisionManager {
         updater.exec_mut(move |world|{
             for (collision_handlers, collision_entities) in collisions_to_handle{
                 if collision_entities[0] != collision_entities[1] {
-                    (collision_handlers[0])(collision_entities[0], collision_entities[1], world);
-                    (collision_handlers[1])(collision_entities[1], collision_entities[0], world);
+                    let _ = (collision_handlers[0])(collision_entities[0], collision_entities[1], world);
+                    let _ = (collision_handlers[1])(collision_entities[1], collision_entities[0], world);
                 }
             }
         });
@@ -74,20 +74,17 @@ pub fn asteroid_collision_handler(current_entity: Entity, other_entity: Entity, 
     let asteroid_pos = world.read_storage::<Pose>().get(current_entity).ok_or(CollisionHandlerError::MissingComponent)?.clone();
     let asteroid_rigidbody = world.read_storage::<RigidBody>().get(current_entity).ok_or(CollisionHandlerError::MissingComponent)?.clone();
     let mut rng = thread_rng();
-    match other_collider_type {
-        ColliderType::Projectile => {
+    if let ColliderType::Projectile = other_collider_type {
             if next_asteroid_level > 0 {
                 //TODO: base perturbation on the input angle of the projectile
                 let vel_perturbation = euclid::vec2(rng.gen_range(-0.005,0.005),rng.gen_range(-0.005,0.005));
                 let new_velocities = [asteroid_rigidbody.velocity + vel_perturbation, asteroid_rigidbody.velocity - vel_perturbation];
                 for new_velocity in new_velocities.iter() {
                     //TODO: fix random number generator
-                    asterod_builder(world.create_entity(), next_asteroid_level, asteroid_pos.x, asteroid_pos.y, new_velocity.clone(), rand::thread_rng()).build();
+                    asterod_builder(world.create_entity(), next_asteroid_level, asteroid_pos.x, asteroid_pos.y, *new_velocity, rand::thread_rng()).build();
                 }
             }
-            world.delete_entity(current_entity);
-        },
-        _ => {}
+            let _result = world.delete_entity(current_entity);
     }
     Ok(())
 }
@@ -96,11 +93,8 @@ pub fn player_collision_handler(current_entity: Entity, other_entity: Entity, wo
     let other_collider_type = world.read_storage::<Collider>().get(other_entity).ok_or(CollisionHandlerError::MissingComponent)?.collider_type;
     let mut shuttles = world.write_storage::<Shuttle>();
     let shuttle = shuttles.get_mut(current_entity).ok_or(CollisionHandlerError::MissingComponent)?;
-    match other_collider_type {
-        ColliderType::Enemy => {
+    if let ColliderType::Enemy = other_collider_type {
             shuttle.handle_collsion_with_enemy(current_entity, world);
-        },
-        _ => {}
     }
     Ok(())
 }
@@ -109,13 +103,9 @@ pub fn player_projectile_collision_handler(current_entity: Entity, other_entity:
     let colliders = world.read_storage::<Collider>();
     let hierarchies = world.read_storage::<Hierarchy>();
     let mut scores = world.write_storage::<Score>();
-    let other_collider = colliders.get(other_entity);
-    let maybe_shooter_entity = hierarchies.get(current_entity);
     let mut maybe_other_collider_type = None;
-    match other_collider {
-        Some(collider) => {maybe_other_collider_type = Some(collider.collider_type);},
-        _ =>{
-        },
+    if let Some(collider) = colliders.get(other_entity) {
+        maybe_other_collider_type = Some(collider.collider_type);
     }
     let entities = world.entities();
     let mut score_gain:u32 = 0;
@@ -125,27 +115,19 @@ pub fn player_projectile_collision_handler(current_entity: Entity, other_entity:
                 ColliderType::Player => {},
                 ColliderType::Projectile => {},
                 _ => {
-                    entities.delete(current_entity);
+                    let _result = entities.delete(current_entity);
                     score_gain = 5;
                 }
             }
         }
         _ => {
-            entities.delete(current_entity);
+            let _result = entities.delete(current_entity);
             score_gain = 5;
         }
     }
-    match hierarchies.get(current_entity) {
-        Some(Hierarchy) => {
-            match scores.get_mut(Hierarchy.parent) {
-                Some(shooter_score) =>{
-                    shooter_score.add_score(score_gain);
-                }
-                _ => {
-                }
-            }
-        }
-        _ => {
+    if let Some(hierarchy) = hierarchies.get(current_entity) {
+        if let Some(shooter_score) = scores.get_mut(hierarchy.parent){
+            shooter_score.add_score(score_gain);
         }
     }
     Ok(())

@@ -149,10 +149,8 @@ fn main() {
     let maybe_paths = fs::read_dir("./resources/fonts");
     for e in WalkDir::new("./resources/fonts").into_iter().filter_map(|e| e.ok()) {
         if e.metadata().unwrap().is_file() {
-            let maybe_font = load_font(e.path());
-            match maybe_font {
-                Ok(parsed_font) => {txt_renderer.add_font(parsed_font);},
-                _ => {}
+            if let Ok(parsed_font) = load_font(e.path()){
+                txt_renderer.add_font(parsed_font);
             }
 
         }
@@ -165,14 +163,14 @@ fn main() {
             renderer = match args.value_of("file") {
                 None => Result::Err(RenderingError::ArgumentError),
                 Some(path_string) => match SvgRenderer::new(path_string) {
-                    Ok(mut initiated_renderer) => Result::Ok(Box::new(initiated_renderer)),
+                    Ok(initiated_renderer) => Result::Ok(Box::new(initiated_renderer)),
                     Err(initiation_error) => Result::Err(initiation_error),
                 }
             }
         }
         ("asteroids", Some(args)) => {
             renderer = match AsteroidsRenderer::new(txt_renderer.borrow()) {
-                Ok(mut initiated_renderer) => Result::Ok(Box::new(initiated_renderer)),
+                Ok(initiated_renderer) => Result::Ok(Box::new(initiated_renderer)),
                 Err(initiation_error) => Result::Err(initiation_error),
             }
         }
@@ -181,9 +179,9 @@ fn main() {
 
     match renderer {
 
-        Err(errorMessage) => { eprintln!("Error initializing renderer: {}", errorMessage)}
+        Err(error_message) => { eprintln!("Error initializing renderer: {}", error_message)}
         Ok(mut boxed_renderer) => {
-            let mut initialized_renderer = boxed_renderer.as_mut();
+            let initialized_renderer = boxed_renderer.as_mut();
             let running = Arc::new(AtomicBool::new(true));
             let r = running.clone();
 
@@ -191,7 +189,7 @@ fn main() {
                 r.store(false, Ordering::SeqCst);
             }).expect("Error setting Ctrl-C handler");
 
-            let mut tracer = Tracer::new(0.0, 0.0, 0.0);
+            let tracer = Tracer::new(0.0, 0.0, 0.0);
             let mut capemgr = pruif::Cape::new();
             let mut first_run = true;
             while running.load(Ordering::SeqCst) {
@@ -200,7 +198,7 @@ fn main() {
                         let samples = tracer.trace_path(path_to_display.as_slice());
                         capemgr.push_command(samples, true);
                     }
-                    Err(errorMessage) => {
+                    Err(_err) => {
                         running.store(false, Ordering::SeqCst);
                     }
                 }

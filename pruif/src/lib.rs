@@ -21,7 +21,7 @@ use std::time::Duration;
 use std::iter::FromIterator;
 use std::collections::vec_deque::Iter;
 use std::sync::atomic::{AtomicBool, Ordering};
-use pru_control::{SampleScaled, CommandRegPair, Frequencies, Ctrl, PWMControlReg_t, PRU_DBUF_CAPACITY};
+use pru_control::{SampleScaled, CommandRegPair, Frequencies, Ctrl, PWMControlReg, PRU_DBUF_CAPACITY};
 use std::process::Command;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 use visual_debugger::{VisDebug, VIS_DEBUG_DBUF_CAPACITY};
@@ -105,7 +105,7 @@ impl Cape {
         let (mut bank1, mut bank2) = pruss.dram2.split_at(0x10100);
         let ctrl = bank1.alloc(Ctrl {
             delay: 0,
-            control: PWMControlReg_t::RELOAD,
+            control: PWMControlReg::RELOAD,
             flag: 0,
             read_bank: 0,
         });
@@ -138,14 +138,14 @@ impl Cape {
         }
 
         ctrl.flag = 0;
-        ctrl.control.set(PWMControlReg_t::ENABLE, false);
+        ctrl.control.set(PWMControlReg::ENABLE, false);
         ctrl.delay = frequency as u32;
         println!("Delay loaded!");
-        ctrl.control.set(PWMControlReg_t::RELOAD, true);
+        ctrl.control.set(PWMControlReg::RELOAD, true);
         println!("control loaded!");
-        ctrl.control.set(PWMControlReg_t::ENABLE, true);
+        ctrl.control.set(PWMControlReg::ENABLE, true);
         println!("Start!");
-        ctrl.control.set(PWMControlReg_t::RELOAD, false);
+        ctrl.control.set(PWMControlReg::RELOAD, false);
 
 
         loop {
@@ -188,7 +188,7 @@ impl Cape {
         }
         // Stop pru execution
 
-        ctrl.control.set(PWMControlReg_t::ENABLE, false);
+        ctrl.control.set(PWMControlReg::ENABLE, false);
     }
 
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]

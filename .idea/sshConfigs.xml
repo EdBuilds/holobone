@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="192.168.1.87" id="27f5fc97-6d37-4f03-b971-fbd5e9ac126d" port="22" customName="beaglebone" nameFormat="CUSTOM" username="debian">
+        <option name="customName" value="beaglebone" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>

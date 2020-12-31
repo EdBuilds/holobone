@@ -74,7 +74,7 @@ impl Shuttle {
             let mut poses = world.write_storage::<Pose>();
             let mut shuttle_pose = poses.get_mut(own_entity).unwrap();
             let mut rigidbodies = world.write_storage::<RigidBody>();
-            let mut shuttle_rigidbody = rigidbodies.get_mut(own_entity).unwrap();
+            let shuttle_rigidbody = rigidbodies.get_mut(own_entity).unwrap();
             shuttle_pose.rot = Angle::zero();
             shuttle_pose.x = 0.0;
             shuttle_pose.y = 0.0;
@@ -95,7 +95,7 @@ impl Shuttle {
 
     pub fn start_auto_shield(&mut self, now: &Instant) {
         self.shield = true;
-        self.auto_shield_start_time = now.clone();
+        self.auto_shield_start_time = *now;
 
     }
 

@@ -1,16 +1,13 @@
 use std::sync::{Arc, Mutex};
 extern crate sdl2;
 use sdl2::pixels::Color;
-use sdl2::event::Event;
-use sdl2::keyboard::Keycode;
-use std::time::Duration;
-use sdl2::render::WindowCanvas;
 use sdl2::Error;
-use std::{thread, time};
+use std::thread;
 use std::collections::VecDeque;
 use pru_control::{CommandRegPair, Frequencies};
 use pru_control::CommandReg;
 use std::sync::mpsc::Sender;
+use std::time::Duration;
 
 pub const VIS_DEBUG_DBUF_CAPACITY: usize = 100;
 pub struct VisDebug {
@@ -21,16 +18,16 @@ pub struct VisDebug {
 impl VisDebug {
 
     pub fn new(frequency: &Frequencies, buffer_size: usize, buffer_empty_sender: Sender<u32>) -> Result<VisDebug, Error > {
-        let mut rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>> = Arc::new(Mutex::new(VecDeque::new()));
-        let mut local_rolling_buffer = rolling_buffer.clone();
-        let mut delay = time::Duration::from_millis( match frequency {
+        let rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>> = Arc::new(Mutex::new(VecDeque::new()));
+        let local_rolling_buffer = rolling_buffer.clone();
+        let mut delay = Duration::from_millis( match frequency {
             Frequencies::Hz1 => 1000,
             Frequencies::Hz10 => 100,
             Frequencies::Hz100 => 10,
             Frequencies::Hz1000 => 10,
             _ => 1,
         });
-        let mut update_handle = thread::spawn(move || {
+        let update_handle = thread::spawn(move || {
             const ON1_COLOR: Color = Color::RGB(0xFE, 0x80, 0x19);
             const OFF1_COLOR: Color = Color::RGB(0xB8, 0xBB, 0x26);
             const ON2_COLOR: Color = Color::RGB(0xB1, 0x62, 0x86);
@@ -54,13 +51,13 @@ impl VisDebug {
                     match local_rolling_buffer.lock(){
                         Ok(mut roll_buf) => {
                             (*roll_buf).iter().for_each(|command_pair| {
-                                if command_pair.channelA.contains(CommandReg::LASER_ENABLE) {
+                                if command_pair.channel_a.contains(CommandReg::LASER_ENABLE) {
                                     canvas.set_draw_color(ON2_COLOR);
                                 } else {
                                     canvas.set_draw_color(OFF2_COLOR);
                                 }
-                                let x = command_pair.channelA.data() as i32 / 4;
-                                let y = command_pair.channelB.data() as i32 / 4;
+                                let x = command_pair.channel_a.data() as i32 / 4;
+                                let y = command_pair.channel_b.data() as i32 / 4;
                                 canvas.draw_point(sdl2::rect::Point::new(x, y)).expect("Dong")
                             });
                             (*roll_buf).clear();
@@ -70,10 +67,10 @@ impl VisDebug {
                     canvas.present();
                 }
                 match buffer_empty_sender.send(0) {
-                    Err(err) => {break;},
+                    Err(_err) => {break;},
                     _ => {},
                 }
-                thread::sleep_ms(20);
+                std::thread::sleep(Duration::from_millis(20));
             }
         });
 

@@ -1,6 +1,5 @@
 #[macro_use]
 extern crate bitflags;
-#[macro_use]
 extern crate bitfield;
 extern crate clap;
 use clap::arg_enum;
@@ -32,7 +31,7 @@ arg_enum!{
 }
 
 bitflags! {
-  pub struct PWMControlReg_t: u32{
+  pub struct PWMControlReg: u32{
     const ENABLE = 1 << 0;
     const RELOAD = 1 << 1;
   }
@@ -68,32 +67,32 @@ pub struct SampleScaled {
 
 #[derive(Clone, Copy, Debug)]
 pub struct CommandRegPair {
-    pub channelB: CommandReg,
-    pub channelA: CommandReg,
+    pub channel_b: CommandReg,
+    pub channel_a: CommandReg,
 }
 
 impl CommandRegPair {
     pub fn new(sample: SampleScaled) -> CommandRegPair {
         const DATA_MASK: u16 = (1 << 12) - 1;
-        let mut channelA = CommandReg {
+        let mut channel_a = CommandReg {
             bits: sample.data_a & DATA_MASK,
         } | CommandReg::OUTPUT_GAIN_BAR
             | CommandReg::INPUT_BUFFER;
-        let mut channelB = CommandReg {
+        let mut channel_b = CommandReg {
             bits: sample.data_b & DATA_MASK,
         } | CommandReg::OUTPUT_GAIN_BAR
             | CommandReg::INPUT_BUFFER
             | CommandReg::CHANNEL_B;
-        channelA.set(CommandReg::SHUTDOWN_BAR, sample.voltage_out);
-        channelB.set(CommandReg::SHUTDOWN_BAR, sample.voltage_out);
-        CommandRegPair { channelB, channelA }
+        channel_a.set(CommandReg::SHUTDOWN_BAR, sample.voltage_out);
+        channel_b.set(CommandReg::SHUTDOWN_BAR, sample.voltage_out);
+        CommandRegPair { channel_b, channel_a }
     }
 }
 
 #[derive(Clone, Copy)]
 pub struct Ctrl {
     pub delay: u32,
-    pub control: PWMControlReg_t,
+    pub control: PWMControlReg,
     pub flag: u32,
     pub read_bank: u32,
 }

@@ -33,7 +33,7 @@ pub fn asterod_builder(entity:EntityBuilder, level: u32, x: f32, y: f32, velocit
         })
         .with(Collider {
             collider_type: ColliderType::Enemy,
-            collider_outline: double_outline.clone(),
+            collider_outline: double_outline,
             collision_handler: asteroid_collision_handler
         })
         .with(Asteroid{level})

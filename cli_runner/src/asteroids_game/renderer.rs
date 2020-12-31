@@ -21,7 +21,7 @@ impl OutlineFactory {
         let mut builder = Path::builder();
         let scale = 0.05;
         builder.move_to(point(scale, 0.02));
-        builder.arc(Point::new(0.00,0.02), Vector::new(scale, scale), Angle::radians(2.0*3.14), Angle::radians(0.0));
+        builder.arc(Point::new(0.00,0.02), Vector::new(scale, scale), Angle::radians(2.0*std::f32::consts::PI), Angle::radians(0.0));
         builder.close();
         builder.build()
     }
@@ -60,8 +60,8 @@ pub struct Renderable {
 }
 
 pub fn render_entities(ecs: &World) -> Path{
-    let mut poses = ecs.read_storage::<Pose>();
-    let mut renderables = ecs.read_storage::<Renderable>();
+    let poses = ecs.read_storage::<Pose>();
+    let renderables = ecs.read_storage::<Renderable>();
     let mut return_path = Path::new();
     for (pose, renderable) in ( &poses, &renderables).join() {
         let mut path = renderable.outline.transformed(Rotation2D{

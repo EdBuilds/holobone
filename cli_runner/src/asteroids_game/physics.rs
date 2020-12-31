@@ -48,7 +48,7 @@ impl<'a> System<'a> for MovementSimulator {
             } else {
                 if pose.x < -1.0 || pose.x > 1.0 ||
                     pose.y < -1.0 || pose.y > 1.0 {
-                    let result = entities.delete(entity);
+                    let _result = entities.delete(entity);
                 }
             }
         }
