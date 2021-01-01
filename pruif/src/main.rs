@@ -7,7 +7,7 @@ fn main() {
     let mut capemgr = pruif::Cape::new();
     let mut commands = Vec::with_capacity(10);
     for i in 0..200 {
-        let mut angle = i as f32 / 200.0 * std::f32::consts::PI * 2.0;
+        let angle = i as f32 / 200.0 * std::f32::consts::PI * 2.0;
         commands.push(Sample{
             voltage_x: angle.sin()*2.0,
             voltage_y: angle.cos()*2.0,

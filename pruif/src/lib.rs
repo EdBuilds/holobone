@@ -1,28 +1,19 @@
-#[macro_use]
 extern crate bitflags;
-#[macro_use]
 extern crate bitfield;
 //extern crate prusst;
 use std::collections::VecDeque;
-use std::{result, time};
-use std::vec;
+use std::time;
 
 // TODO: this value could be stored in the eeprom
-const DAC_MAX: u16 = ((1<<12)-1);
-const V_TO_DAC_CODE: f32 = (DAC_MAX as f32 / 10.0);
+const DAC_MAX: u16 = (1<<12)-1;
+const V_TO_DAC_CODE: f32 = DAC_MAX as f32 / 10.0;
 
 use std::borrow::BorrowMut;
-use std::fs::File;
-use std::io::Write;
 use std::sync::{Arc, Mutex, mpsc};
 use std::thread;
 use std::thread::JoinHandle;
-use std::time::Duration;
-use std::iter::FromIterator;
-use std::collections::vec_deque::Iter;
 use std::sync::atomic::{AtomicBool, Ordering};
-use pru_control::{SampleScaled, CommandRegPair, Frequencies, Ctrl, PWMControlReg, PRU_DBUF_CAPACITY};
-use std::process::Command;
+use pru_control::{SampleScaled, CommandRegPair, Frequencies};
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 use visual_debugger::{VisDebug, VIS_DEBUG_DBUF_CAPACITY};
 #[cfg(target_arch = "arm")]
@@ -43,7 +34,6 @@ pub struct Sample {
     pub laser_on: bool,
 }
 fn scale_sample(sample: &Sample) -> SampleScaled {
-    let max = DAC_MAX;
     let data_a = ((-sample.voltage_x * V_TO_DAC_CODE) + DAC_MAX as f32 / 2.0) as u16;
     let data_b = ((-sample.voltage_y * V_TO_DAC_CODE) + DAC_MAX as f32 / 2.0) as u16;
     // TODO: Finish scaling
@@ -55,7 +45,6 @@ fn scale_sample(sample: &Sample) -> SampleScaled {
     }
 }
 pub struct Cape {
-    member: u32,
     runner_handle: Option<thread::JoinHandle<()>>,
     rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>>,
     staging_buffer: Arc<Mutex<Vec<CommandRegPair>>>,
@@ -65,7 +54,6 @@ pub struct Cape {
 impl Cape {
     pub fn new() -> Cape {
         Cape {
-            member: 1,
             runner_handle: None,
             rolling_buffer: Arc::new(Mutex::new(VecDeque::new())),
             staging_buffer: Arc::new(Mutex::new(Vec::new())),
@@ -199,7 +187,7 @@ impl Cape {
         let (buffer_empty_sender, buffer_empty_receiver) = mpsc::channel();
 
         let visual_debugger = VisDebug::new(&frequency, VIS_DEBUG_DBUF_CAPACITY, buffer_empty_sender).unwrap();
-        let mut delay = time::Duration::from_millis( match frequency {
+        let _delay = time::Duration::from_millis( match frequency {
             Frequencies::Hz1 => 1000,
             Frequencies::Hz10 => 100,
             Frequencies::Hz100 => 10,
@@ -210,19 +198,19 @@ impl Cape {
                break;
            }
            {
-           let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
-           let mut local_staging_buffer = (*staging_buffer.lock().unwrap()).clone();
+           let local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
+           let local_staging_buffer = (*staging_buffer.lock().unwrap()).clone();
            if local_staging_buffer.is_empty() { panic!("Uninitialized staging buffer!")}
            local_rolling_buffer.append(VecDeque::from(local_staging_buffer).borrow_mut());
                //println!("Loaded staging to rolling buffer");
            }
-           let empty_buffer = buffer_empty_receiver.recv().unwrap();
+           let _empty_buffer = buffer_empty_receiver.recv().unwrap();
            //thread::sleep(delay);
            //println!("Load request received");
 
            {
-               let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
-               let mut drained_data = local_rolling_buffer.drain(0..local_rolling_buffer.len()).collect::<Vec<CommandRegPair>>();
+               let local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
+               let drained_data = local_rolling_buffer.drain(0..local_rolling_buffer.len()).collect::<Vec<CommandRegPair>>();
                visual_debugger.display_buffer(drained_data);
            }
        }
@@ -230,9 +218,9 @@ impl Cape {
     }
 
     pub fn start(&mut self, frequency: Frequencies) {
-        let mut rolling_buffer = self.rolling_buffer.clone();
-        let mut staging_buffer = self.staging_buffer.clone();
-        let mut kill_switch = self.kill_switch.clone();
+        let rolling_buffer = self.rolling_buffer.clone();
+        let staging_buffer = self.staging_buffer.clone();
+        let kill_switch = self.kill_switch.clone();
 
         self.runner_handle = Some(thread::spawn(move || {
             Cape::runner(frequency, rolling_buffer, staging_buffer, kill_switch);
@@ -245,13 +233,18 @@ impl Cape {
     pub fn push_command(&mut self, samples: Vec<Sample>, repeat: bool) {
 
         let command_reg_pairs:Vec<CommandRegPair>  = samples.iter().map(|sample|CommandRegPair::new(scale_sample(sample))).collect();
-        let mut rolling_buffer = self.rolling_buffer.clone();
-        let mut staging_buffer = self.staging_buffer.clone();
+        let rolling_buffer = self.rolling_buffer.clone();
+        let staging_buffer = self.staging_buffer.clone();
         (*(rolling_buffer.lock().unwrap())).append(VecDeque::from(command_reg_pairs.clone()).borrow_mut());
         if repeat {
-
-            (*(staging_buffer.lock().unwrap())) = command_reg_pairs.to_owned();
+            (*(staging_buffer.lock().unwrap())) = command_reg_pairs;
         }
+    }
+}
+
+impl Default for Cape {
+    fn default() -> Self {
+        Self::new()
     }
 }
 impl Drop for Cape {
