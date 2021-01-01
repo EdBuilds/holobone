@@ -32,10 +32,10 @@ impl Score {
 pub struct ScoreUpdater;
 
 impl<'a> System<'a> for ScoreUpdater {
-    type SystemData = (WriteStorage<'a, Score>);
+    type SystemData = WriteStorage<'a, Score>;
 
-    fn run(&mut self, (mut scores) : Self::SystemData) {
-        for (score) in (&mut scores).join() {
+    fn run(&mut self, mut scores : Self::SystemData) {
+        for score in (&mut scores).join() {
             let now = Instant::now();
             let score_gain_interval = Duration::from_secs(1);
             if (now-score.last_score_update) > score_gain_interval {
@@ -100,19 +100,15 @@ impl Shuttle {
     }
 
     pub fn update_auto_shield(&mut self, now: &Instant) {
-        if self.shield {
-            if self.auto_shield_duration < (*now - self.auto_shield_start_time) {
+        if self.shield && self.auto_shield_duration < (*now - self.auto_shield_start_time) {
                  self.shield = false;
             }
-        }
     }
 
     pub fn get_shuttle_auto_shield_outline(&self, now: &Instant) -> Path{
         let blink_cycle_s:f32 = 0.5;
-        let maybe_auto_shield_remaining_time = self.auto_shield_duration.checked_sub(
-        (*now - self.auto_shield_start_time));
-        match maybe_auto_shield_remaining_time {
-        Some(auto_shield_remaining_time) => {
+        if let Some(auto_shield_remaining_time) = self.auto_shield_duration.checked_sub(
+        *now - self.auto_shield_start_time) {
             if auto_shield_remaining_time < Duration::from_secs(2) {
                 if auto_shield_remaining_time.as_secs_f32() % blink_cycle_s < (blink_cycle_s/2.0){
                     OutlineFactory::shuttle_shield()
@@ -122,8 +118,8 @@ impl Shuttle {
             } else {
                 OutlineFactory::shuttle_shield()
             }
-        }
-        _ => { Path::new() }
+        } else {
+            Path::new()
         }
     }
 }

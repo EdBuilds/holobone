@@ -1,25 +1,17 @@
-use lyon_path::{Path, PositionStore};
+use lyon_path::Path;
 use crate::renderer::Renderer;
 use crate::renderer::RenderingError;
-use gilrs::{Gilrs, Button, Event, GamepadId, Axis};
-use std::borrow::{Borrow, BorrowMut};
-use lyon_path::math::{point};
+use gilrs::{Gilrs, Button, Event, Axis};
+use std::borrow::Borrow;
 use std::marker::PhantomData;
 use gilrs::ev::EventType::ButtonReleased;
 use crate::text_renderer::{TextRenderer, TextAlignment};
-use lyon::lyon_svg::parser::AttributeId::TextRendering;
-use lyon::geom::euclid::{Translation2D, Rotation2D, Angle, Rect};
-use lyon::path::FillRule;
-use lyon::path::iterator::*;
-use rltk::{Rltk, RGB, VirtualKeyCode};
+use lyon::geom::euclid::{Angle, Rect};
 use specs::prelude::*;
-use std::cmp::{max, min};
 use std::time::{Duration, Instant};
-use specs_derive::Component;
-use euclid::default::Vector2D;
 use euclid::vec2;
 use lyon::geom::euclid::{Point2D, Size2D};
-use rand::{Rng, thread_rng};
+use rand::Rng;
 use rand::rngs::ThreadRng;
 use crate::asteroids_game::collision_manager::*;
 use crate::asteroids_game::pose::Pose;
@@ -177,8 +169,8 @@ impl <'a, 'b>AsteroidsRenderer<'a, 'b> {
             height: 0.1,
             _unit: PhantomData
         } };
-        let score_ui_path = self.text_renderer.print(telemetry.score.to_string().as_ref(), &score_text_box, (TextAlignment::Left))?;
-        let lives_ui_path = self.text_renderer.print(telemetry.lives.to_string().as_ref(), &lives_text_box, (TextAlignment::Right))?;
+        let score_ui_path = self.text_renderer.print(telemetry.score.to_string().as_ref(), &score_text_box, TextAlignment::Left)?;
+        let lives_ui_path = self.text_renderer.print(telemetry.lives.to_string().as_ref(), &lives_text_box, TextAlignment::Right)?;
         Ok(score_ui_path.merge(lives_ui_path.borrow()))
     }
 }
@@ -199,7 +191,7 @@ impl Renderer for AsteroidsRenderer<'_, '_> {
                     _unit: PhantomData
                 } };
                 path = self.text_renderer.print("Press any key to start.", &wait_text_box, ())?;
-                while let Some(Event { id, event, time }) = self.gilrs.next_event() {
+                while let Some(Event { id, event, time: _ }) = self.gilrs.next_event() {
                     if let ButtonReleased (_,_) = event {
                         // transitioning to running state
                         // Create shuttle
@@ -232,8 +224,6 @@ impl Renderer for AsteroidsRenderer<'_, '_> {
                 }
             },
             AsteroidsGameState::Running => {
-                while let Some(Event { id, event, time }) = self.gilrs.next_event() {
-                }
                 let mut angle_input =0.0;
                 let mut y_axis_input =0.0;
                 let mut x_axis_input =0.0;

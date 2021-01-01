@@ -1,12 +1,12 @@
 use crate::font_manager::LineFont;
 use std::collections::HashMap;
-use lyon::math::{Rect, Size, Transform};
+use lyon::math::{Rect, Transform};
 use crate::renderer::RenderingError;
-use std::borrow::{Borrow, BorrowMut};
+use std::borrow::Borrow;
 use lyon_path::Path;
 use lyon::math::Translation;
 use std::marker::PhantomData;
-use lyon::algorithms::fit::{fit_path, fit_rectangle, FitStyle};
+use lyon::algorithms::fit::{fit_path, FitStyle};
 use lyon::algorithms::aabb::fast_bounding_rect;
 
 pub type TextFit = FitStyle;
@@ -167,13 +167,6 @@ impl TextRenderer {
            TextAlignment::Right => {
                Translation{
                    x: bounding_box.max_x() - misaligned_bounding_box.max_x(),
-                   y: 0.0,
-                   _unit: PhantomData
-               }
-           }
-           _ => {
-               Translation{
-                   x: 0.0,
                    y: 0.0,
                    _unit: PhantomData
                }

@@ -1,10 +1,7 @@
-use lyon_path;
-use svg::parser::Event;
 use crate::renderer::RenderingError;
 extern crate serde;
 extern crate serde_xml_rs;
 extern crate serde_path_to_error;
-use serde::{Deserialize};
 use std::fs::File;
 use std::io::BufReader;
 use std::convert::{TryFrom, TryInto};

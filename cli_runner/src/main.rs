@@ -1,39 +1,18 @@
-use svgtypes::PathParser;
-use svgtypes::PathSegment;
-
-use svg::node::element::path::{Command, Data, Position};
-use svg::node::element::tag::Path;
-use svg::parser::Event;
-
 #[macro_use]
 extern crate serde_derive;
 
-use clap::{Arg, App, value_t_or_exit, Values, SubCommand};
-use xmlparser;
-use std::fs;
-use tracer::{generate_trace_from_segments, LaserPoint};
-use std::{thread, time};
+use clap::{Arg, App, SubCommand};
 use std::time::Duration;
-use pruif::{Sample, Cape};
 use pru_control::{Frequencies};
 extern crate ctrlc;
 extern crate lyon;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
-use lyon_path::builder::*;
-use lyon_path::{Path, Builder, PathEvent};
-use lyon_path::math::{Point, Vector};
-use lyon::algorithms::aabb::bounding_rect;
-use lyon::algorithms::fit::fit_path;
-use lyon::svg::path_utils::build_path;
-use lyon::path::PathSlice;
+use lyon_path::math::Point;
 use std::marker::PhantomData;
-use std::borrow::{Borrow, BorrowMut};
+use std::borrow::Borrow;
 use tracer::Tracer;
-use lyon::lyon_tessellation::math::{Translation, Scale, Transform};
-use lyon::lyon_algorithms::math::{Rect, size, Size};
-use lyon::lyon_algorithms::fit::FitStyle;
-use svgtypes::TransformListToken::Translate;
+use lyon::lyon_algorithms::math::Size;
 
 mod renderer;
 mod svg_renderer;
@@ -43,12 +22,9 @@ mod font_manager;
 mod text_renderer;
 use crate::renderer::{Renderer, RenderingError};
 use crate::svg_renderer::SvgRenderer;
-use svg::node::NodeClone;
-use crate::renderer::RenderingError::ArgumentError;
 use crate::font_manager::load_font;
 extern crate walkdir;
 use walkdir::WalkDir;
-use crate::text_renderer::TextAlignment;
 use crate::asteroids_renderer::AsteroidsRenderer;
 
 fn main() {
@@ -110,8 +86,6 @@ fn main() {
         .get_matches();
 
 
-    let myfile = matches.value_of("file");
-    let freq = Frequencies::Hz40000;
     let scale_arg = matches.values_of("scale");
     let mut user_scale = Size {
         width: 1.0,
@@ -146,7 +120,6 @@ fn main() {
     }
     // Populate text_renderer for global use
     let mut txt_renderer = text_renderer::TextRenderer::new();
-    let maybe_paths = fs::read_dir("./resources/fonts");
     for e in WalkDir::new("./resources/fonts").into_iter().filter_map(|e| e.ok()) {
         if e.metadata().unwrap().is_file() {
             if let Ok(parsed_font) = load_font(e.path()){
@@ -168,7 +141,7 @@ fn main() {
                 }
             }
         }
-        ("asteroids", Some(args)) => {
+        ("asteroids", Some(_args)) => {
             renderer = match AsteroidsRenderer::new(txt_renderer.borrow()) {
                 Ok(initiated_renderer) => Result::Ok(Box::new(initiated_renderer)),
                 Err(initiation_error) => Result::Err(initiation_error),
@@ -207,7 +180,7 @@ fn main() {
 
                 }
                 first_run = false;
-                std::thread::sleep_ms(33);
+                std::thread::sleep(Duration::from_millis(33));
             }
             drop(capemgr);
         }

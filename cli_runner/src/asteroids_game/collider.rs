@@ -11,7 +11,7 @@ pub enum ColliderType{
 
 pub enum CollisionHandlerError{
     MissingComponent,
-    NotImplemented,
+    //NotImplemented,
 }
 
 //TODO: return the entities that needs to be deleted!

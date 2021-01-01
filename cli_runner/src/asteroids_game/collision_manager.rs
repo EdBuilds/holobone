@@ -1,15 +1,12 @@
 use lyon::lyon_algorithms::hit_test::hit_test_path;
 use lyon::lyon_algorithms::path::FillRule;
-use specs_derive::Component;
 use specs::prelude::*;
 use specs::{Entity, World, System, ReadStorage, Read, LazyUpdate, Entities, WorldExt};
-use lyon_path::Path;
-use lyon::geom::euclid::{Translation2D, Rotation2D, Angle, Vector2D};
+use lyon::geom::euclid::{Translation2D, Rotation2D};
 use rand::{thread_rng, Rng};
 use crate::asteroids_game::pose::Pose;
 use crate::asteroids_game::asteroid::{Asteroid, asterod_builder};
 use crate::asteroids_game::physics::RigidBody;
-use rand::rngs::ThreadRng;
 use crate::asteroids_game::collider::{ColliderType, Collider, CollisionHandler, CollisionHandlerError};
 use crate::asteroids_game::shuttle::{Shuttle, Hierarchy, Score};
 
@@ -65,8 +62,8 @@ impl<'a> System<'a> for CollisionManager {
 
 
 
-
-fn placeholder_collision_handler(current_entity: Entity, other_entity: Entity, world:&mut World) -> Result<(), CollisionHandlerError>{Err(CollisionHandlerError::NotImplemented)}
+// TODO: find a way to have an unused placeholder function withouth warnings
+//fn placeholder_collision_handler(current_entity: Entity, other_entity: Entity, world:&mut World) -> Result<(), CollisionHandlerError>{Err(CollisionHandlerError::NotImplemented)}
 
 pub fn asteroid_collision_handler(current_entity: Entity, other_entity: Entity, world: &mut World) -> Result<(), CollisionHandlerError>{
     let other_collider_type = world.read_storage::<Collider>().get(other_entity).ok_or(CollisionHandlerError::MissingComponent)?.collider_type;

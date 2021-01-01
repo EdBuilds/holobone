@@ -1,5 +1,5 @@
 use lyon_path::Path;
-use std::{io, fmt};
+use std::fmt;
 use crate::renderer::RenderingError::{SvgParsingError, StringParsingError, IOError};
 
 pub trait Renderer{
@@ -27,7 +27,7 @@ impl From<std::io::Error> for RenderingError {
 }
 
 impl From<std::num::ParseFloatError> for RenderingError {
-    fn from(error: std::num::ParseFloatError) -> Self {
+    fn from(_error: std::num::ParseFloatError) -> Self {
         StringParsingError
     }
 }

@@ -18,12 +18,12 @@ pub(crate) struct Asteroid {
 pub fn asterod_builder(entity:EntityBuilder, level: u32, x: f32, y: f32, velocity: Vector2D<f32>, mut rng:ThreadRng) -> EntityBuilder{
     let double_outline = OutlineFactory::asteroid_outline(level);
     entity.with(Pose{
-        x: x,
-        y: y,
+        x,
+        y,
         rot: Angle::zero(),
     })
         .with(RigidBody {
-            velocity: velocity,
+            velocity,
             angular_velocity: Angle::radians(rng.gen_range(-0.2,0.2)),
             last_update: None,
             looping: true,

@@ -5,7 +5,6 @@ use lyon_path::Path;
 use svg::parser::Event;
 use lyon::lyon_svg::path_utils::build_path;
 use std::borrow::Borrow;
-use crate::renderer::RenderingError::SvgParsingError;
 use lyon::math::{Rect, Point, Size};
 use lyon::lyon_algorithms::fit::{fit_path, FitStyle};
 use std::marker::PhantomData;
