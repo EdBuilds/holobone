@@ -5,7 +5,7 @@ extern crate clap;
 use clap::arg_enum;
 
 pub const PRU_DBUF_CAPACITY: usize = 500;
-arg_enum!{
+arg_enum! {
     pub enum Frequencies {
         Hz1 = 50420496,
         Hz2 = 25210243,
@@ -85,7 +85,10 @@ impl CommandRegPair {
             | CommandReg::CHANNEL_B;
         channel_a.set(CommandReg::SHUTDOWN_BAR, sample.voltage_out);
         channel_b.set(CommandReg::SHUTDOWN_BAR, sample.voltage_out);
-        CommandRegPair { channel_b, channel_a }
+        CommandRegPair {
+            channel_b,
+            channel_a,
+        }
     }
 }
 
@@ -96,4 +99,3 @@ pub struct Ctrl {
     pub flag: u32,
     pub read_bank: u32,
 }
-

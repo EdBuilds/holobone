@@ -1,6 +1,6 @@
 use lyon::geom::euclid::Angle;
-use specs_derive::Component;
 use specs::prelude::*;
+use specs_derive::Component;
 
 #[derive(Component, Clone)]
 pub struct Pose {

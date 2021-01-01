@@ -1,15 +1,15 @@
 use std::sync::{Arc, Mutex};
 extern crate sdl2;
+use pru_control::CommandReg;
+use pru_control::{CommandRegPair, Frequencies};
 use sdl2::pixels::Color;
 use sdl2::Error;
-use std::thread;
 use std::collections::VecDeque;
-use pru_control::{CommandRegPair, Frequencies};
-use pru_control::CommandReg;
-use std::sync::mpsc::Sender;
-use std::time::Duration;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::mpsc::Sender;
+use std::thread;
 use std::thread::JoinHandle;
+use std::time::Duration;
 
 pub const VIS_DEBUG_DBUF_CAPACITY: usize = 100;
 pub struct VisDebug {
@@ -19,11 +19,15 @@ pub struct VisDebug {
 }
 
 impl VisDebug {
-
-    pub fn new(frequency: &Frequencies, buffer_size: usize, buffer_empty_sender: Sender<u32>) -> Result<VisDebug, Error > {
-        let rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>> = Arc::new(Mutex::new(VecDeque::new()));
+    pub fn new(
+        frequency: &Frequencies,
+        buffer_size: usize,
+        buffer_empty_sender: Sender<u32>,
+    ) -> Result<VisDebug, Error> {
+        let rolling_buffer: Arc<Mutex<VecDeque<CommandRegPair>>> =
+            Arc::new(Mutex::new(VecDeque::new()));
         let local_rolling_buffer = rolling_buffer.clone();
-        let mut delay = Duration::from_millis( match frequency {
+        let mut delay = Duration::from_millis(match frequency {
             Frequencies::Hz1 => 1000,
             Frequencies::Hz10 => 100,
             Frequencies::Hz100 => 10,
@@ -41,21 +45,27 @@ impl VisDebug {
             delay /= buffer_size as u32;
             let sdl_context = sdl2::init().expect("Ding");
             let video_subsystem = sdl_context.video().expect("Ding");
-            let window = video_subsystem.window("Holobone visual debugger", 1024, 1024)
+            let window = video_subsystem
+                .window("Holobone visual debugger", 1024, 1024)
                 .position_centered()
                 .opengl()
                 .build()
-                .map_err(|e| e.to_string()).expect("Ding");
-            let mut canvas = window.into_canvas().build().map_err(|e| e.to_string()).expect("Ding");
+                .map_err(|e| e.to_string())
+                .expect("Ding");
+            let mut canvas = window
+                .into_canvas()
+                .build()
+                .map_err(|e| e.to_string())
+                .expect("Ding");
 
             loop {
-                if local_kill_switch.load(Ordering::Relaxed){
+                if local_kill_switch.load(Ordering::Relaxed) {
                     break;
                 }
                 {
                     canvas.set_draw_color(Color::RGB(28, 28, 28));
                     canvas.clear();
-                    match local_rolling_buffer.lock(){
+                    match local_rolling_buffer.lock() {
                         Ok(mut roll_buf) => {
                             (*roll_buf).iter().for_each(|command_pair| {
                                 if command_pair.channel_a.contains(CommandReg::LASER_ENABLE) {
@@ -65,11 +75,15 @@ impl VisDebug {
                                 }
                                 let x = command_pair.channel_a.data() as i32 / 4;
                                 let y = command_pair.channel_b.data() as i32 / 4;
-                                canvas.draw_point(sdl2::rect::Point::new(x, y)).expect("Dong")
+                                canvas
+                                    .draw_point(sdl2::rect::Point::new(x, y))
+                                    .expect("Dong")
                             });
                             (*roll_buf).clear();
                         }
-                        _ => {break;}
+                        _ => {
+                            break;
+                        }
                     }
                     canvas.present();
                 }
@@ -93,7 +107,6 @@ impl VisDebug {
     fn kill_thread(&mut self) {
         self.kill_switch.store(true, Ordering::Relaxed);
     }
-
 }
 impl Drop for VisDebug {
     fn drop(&mut self) {

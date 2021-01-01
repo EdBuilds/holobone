@@ -1,11 +1,12 @@
+use crate::renderer::RenderingError::{IOError, StringParsingError, SvgParsingError};
 use lyon_path::Path;
 use std::fmt;
-use crate::renderer::RenderingError::{SvgParsingError, StringParsingError, IOError};
 
-pub trait Renderer{
-    fn update_display(&mut self) -> Result<Path, RenderingError>; }
+pub trait Renderer {
+    fn update_display(&mut self) -> Result<Path, RenderingError>;
+}
 
-pub enum RenderingError{
+pub enum RenderingError {
     ArgumentError,
     DummyError,
     XmlParsingError,
@@ -35,15 +36,12 @@ impl From<std::num::ParseFloatError> for RenderingError {
 impl fmt::Display for RenderingError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            RenderingError::ArgumentError =>
-                write!(f, "Couldn't parse given arguments"),
-            RenderingError::SvgParsingError =>
-                write!(f, "Couldn't parse given svg file. Possibly wrong format."),
-            RenderingError::IOError(ref e) =>
-                e.fmt(f),
-            _ =>
-                write!(f, "Message not implemented for this error code"),
+            RenderingError::ArgumentError => write!(f, "Couldn't parse given arguments"),
+            RenderingError::SvgParsingError => {
+                write!(f, "Couldn't parse given svg file. Possibly wrong format.")
+            }
+            RenderingError::IOError(ref e) => e.fmt(f),
+            _ => write!(f, "Message not implemented for this error code"),
         }
     }
 }
-
