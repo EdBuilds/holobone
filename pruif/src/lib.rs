@@ -2,15 +2,12 @@ extern crate bitfield;
 extern crate bitflags;
 //extern crate prusst;
 use std::collections::VecDeque;
-use std::time;
 
 // TODO: this value could be stored in the eeprom
 const DAC_MAX: u16 = (1 << 12) - 1;
 const V_TO_DAC_CODE: f32 = DAC_MAX as f32 / 10.0;
 
 use pru_control::{CommandRegPair, Frequencies, SampleScaled};
-#[cfg(target_arch = "arm")]
-use prusst::{Evtout, IntcConfig, MemSegment, Pruss, Sysevt};
 use std::borrow::BorrowMut;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{mpsc, Arc, Mutex};
@@ -18,6 +15,14 @@ use std::thread;
 use std::thread::JoinHandle;
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 use visual_debugger::{VisDebug, VIS_DEBUG_DBUF_CAPACITY};
+#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
+use std::time;
+#[cfg(target_arch = "arm")]
+use prusst::{Evtout, IntcConfig, MemSegment, Pruss, Sysevt};
+#[cfg(target_arch = "arm")]
+use pru_control::{PWMControlReg, Ctrl, PRU_DBUF_CAPACITY};
+#[cfg(target_arch = "arm")]
+use std::fs::File;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Error {
@@ -91,21 +96,21 @@ impl Cape {
         };
 
         // Get a handle to an event out.
-        let (mut bank1, mut bank2) = pruss.dram2.split_at(0x10100);
+        let (mut bank1, bank2) = pruss.dram2.split_at(0x10100);
         let ctrl = bank1.alloc(Ctrl {
             delay: 0,
             control: PWMControlReg::RELOAD,
             flag: 0,
             read_bank: 0,
         });
-        let (mut dbuf1, mut dbuf1after) = pruss.dram0.split_at(0x0014);
+        let (dbuf1, dbuf1after) = pruss.dram0.split_at(0x0014);
 
-        let mut databuffer1 = unsafe {
+        let databuffer1 = unsafe {
             pruss
                 .dram0
                 .alloc_uninitialized::<[CommandRegPair; PRU_DBUF_CAPACITY]>()
         };
-        let mut databuffer2 = unsafe {
+        let databuffer2 = unsafe {
             pruss
                 .dram1
                 .alloc_uninitialized::<[CommandRegPair; PRU_DBUF_CAPACITY]>()
@@ -141,9 +146,9 @@ impl Cape {
                 break;
             }
             {
-                let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
+                let local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
                 while local_rolling_buffer.len() < PRU_DBUF_CAPACITY {
-                    let mut local_staging_buffer = (*staging_buffer.lock().unwrap()).clone();
+                    let local_staging_buffer = (*staging_buffer.lock().unwrap()).clone();
                     if local_staging_buffer.is_empty() {
                         panic!("Uninitialized staging buffer!")
                     }
@@ -156,8 +161,8 @@ impl Cape {
 
             {
                 let mut drained_data = Vec::new();
-                let mut local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
-                for num in 1..=PRU_DBUF_CAPACITY {
+                let local_rolling_buffer = &mut (*rolling_buffer.lock().unwrap());
+                for _num in 1..=PRU_DBUF_CAPACITY {
                     match local_rolling_buffer.pop_front() {
                         Some(sample) => drained_data.push(sample),
                         _ => {
@@ -165,7 +170,7 @@ impl Cape {
                         }
                     }
                 }
-                if (ctrl.read_bank == 1) {
+                if ctrl.read_bank == 1 {
                     databuffer1.copy_from_slice(&drained_data[..]);
                 } else if (ctrl.read_bank == 2) {
                     databuffer2.copy_from_slice(&drained_data[..]);
