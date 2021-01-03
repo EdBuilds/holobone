@@ -21,7 +21,7 @@ impl OutlineFactory {
         let mut builder = Path::builder();
         let scale = 0.05;
         builder.move_to(point(scale, 0.02));
-        builder.arc(Point::new(0.00,0.02), Vector::new(scale, scale), Angle::radians(2.0*3.14), Angle::radians(0.0));
+        builder.arc(Point::new(0.00,0.02), Vector::new(scale, scale), Angle::radians(2.0*std::f32::consts::PI), Angle::radians(0.0));
         builder.close();
         builder.build()
     }

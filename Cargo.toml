@@ -5,4 +5,7 @@ members = [
     "visual_debugger",
     "pru_control",
     "cli_runner",
+    "web_server",
+    "frontend",
+    "holobone_api",
 ]
