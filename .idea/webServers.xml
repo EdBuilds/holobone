@@ -3,11 +3,10 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="1801d067-8cd1-4b60-866c-c788145e138e" name="beaglebone" url="http://192.168.1.87">
-        <fileTransfer host="192.168.1.87" port="22" rootFolder="/home/debian" accessType="SFTP">
+        <fileTransfer rootFolder="/home/debian" accessType="SFTP" sshConfigId="27f5fc97-6d37-4f03-b971-fbd5e9ac126d" sshConfig="beaglebone">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
-          <option name="port" value="22" />
         </fileTransfer>
       </webServer>
     </option>

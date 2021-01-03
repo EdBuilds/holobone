@@ -986,9 +986,11 @@ name = "frontend"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "holobone_api",
  "serde",
  "serde_json",
  "wasm-bindgen",
+ "web-sys",
  "yew",
 ]
 
@@ -1440,6 +1442,13 @@ checksum = "5dcb5e64cda4c23119ab41ba960d1e170a774c8e4b9d9e6a9bc18aabf5e59695"
 dependencies = [
  "crypto-mac",
  "digest",
+]
+
+[[package]]
+name = "holobone_api"
+version = "0.1.0"
+dependencies = [
+ "serde",
 ]
 
 [[package]]
@@ -3632,6 +3641,7 @@ dependencies = [
 name = "web_server"
 version = "0.1.0"
 dependencies = [
+ "holobone_api",
  "rocket",
  "rocket_contrib",
  "serde",

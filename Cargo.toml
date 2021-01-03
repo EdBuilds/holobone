@@ -7,4 +7,5 @@ members = [
     "cli_runner",
     "web_server",
     "frontend",
+    "holobone_api",
 ]

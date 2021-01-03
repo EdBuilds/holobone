@@ -10,11 +10,7 @@ use std::io;
 use rocket::response::NamedFile;
 use std::path::PathBuf;
 use std::path::Path;
-
-#[derive(Deserialize, Debug)]
-struct Command {
-    name: String
-}
+use holobone_api::Command;
 
 fn main() {
 
@@ -45,8 +41,10 @@ fn hello() -> Json<&'static str> {
 
 #[post("/command", data = "<command_form>")]
 fn new_command(command_form: rocket_contrib::json::Json<Command>) -> String {
+    println!("Command received: {:?}", command_form);
     format!("Command received: {:?}", command_form)
 }
+
 #[get("/")]
 pub fn index() -> io::Result<NamedFile> {
     NamedFile::open("frontend/static/index.html")
